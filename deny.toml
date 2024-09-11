@@ -220,11 +220,11 @@ allow-registry = ["https://github.com/rust-lang/crates.io-index"]
 # List of URLs for allowed Git repositories
 allow-git = [
   "https://github.com/aya-rs/aya.git",
-  "https://github.com/miker83z/iota-sim.git",
+  "https://github.com/temp-dlt-school-24-org/iota-sim.git",
   "https://github.com/MystenLabs/fastcrypto.git",
   "https://github.com/mystenlabs/anemo.git",
   "https://github.com/mystenmark/async-task.git",
-  "https://github.com/miker83z/tokio-madsim-fork.git",
+  "https://github.com/temp-dlt-school-24-org/tokio-madsim-fork.git",
   "https://github.com/nextest-rs/datatest-stable.git",
   "https://github.com/tokio-rs/prost",
   "https://github.com/zhiburt/tabled.git",
