@@ -8927,7 +8927,7 @@ dependencies = [
 [[package]]
 name = "msim"
 version = "0.1.0"
-source = "git+ssh://git@github.com/iotaledger/iota-sim.git?rev=8fe1939f4bf1e54d0638756c82aaa6c29212e2bb#8fe1939f4bf1e54d0638756c82aaa6c29212e2bb"
+source = "git+ssh://git@github.com/miker83z/iota-sim.git?rev=3dd57809982c58bcdf9764d8a44b05a0fa35c27f#3dd57809982c58bcdf9764d8a44b05a0fa35c27f"
 dependencies = [
  "ahash",
  "async-task",
@@ -8946,7 +8946,7 @@ dependencies = [
  "serde",
  "socket2",
  "tap",
- "tokio-util 0.7.11 (git+ssh://git@github.com/iotaledger/tokio-madsim-fork.git?branch=main)",
+ "tokio-util 0.7.11 (git+ssh://git@github.com/miker83z/tokio-madsim-fork.git?branch=main)",
  "toml",
  "tracing",
  "tracing-subscriber",
@@ -8955,7 +8955,7 @@ dependencies = [
 [[package]]
 name = "msim-macros"
 version = "0.1.0"
-source = "git+ssh://git@github.com/iotaledger/iota-sim.git?rev=8fe1939f4bf1e54d0638756c82aaa6c29212e2bb#8fe1939f4bf1e54d0638756c82aaa6c29212e2bb"
+source = "git+ssh://git@github.com/miker83z/iota-sim.git?rev=3dd57809982c58bcdf9764d8a44b05a0fa35c27f#3dd57809982c58bcdf9764d8a44b05a0fa35c27f"
 dependencies = [
  "darling 0.14.4",
  "proc-macro2",
@@ -11137,7 +11137,7 @@ dependencies = [
 [[package]]
 name = "real_tokio"
 version = "1.39.2"
-source = "git+ssh://git@github.com/iotaledger/tokio-madsim-fork.git?branch=main#e34a35287024b341db16139a402508aaea8ec955"
+source = "git+ssh://git@github.com/miker83z/tokio-madsim-fork.git?branch=main#e34a35287024b341db16139a402508aaea8ec955"
 dependencies = [
  "backtrace",
  "bytes",
@@ -11147,7 +11147,7 @@ dependencies = [
  "pin-project-lite",
  "signal-hook-registry",
  "socket2",
- "tokio-macros 2.4.0 (git+ssh://git@github.com/iotaledger/tokio-madsim-fork.git?branch=main)",
+ "tokio-macros 2.4.0 (git+ssh://git@github.com/miker83z/tokio-madsim-fork.git?branch=main)",
  "windows-sys 0.52.0",
 ]
 
@@ -13428,7 +13428,7 @@ dependencies = [
 [[package]]
 name = "tokio-macros"
 version = "2.4.0"
-source = "git+ssh://git@github.com/iotaledger/tokio-madsim-fork.git?branch=main#e34a35287024b341db16139a402508aaea8ec955"
+source = "git+ssh://git@github.com/miker83z/tokio-madsim-fork.git?branch=main#e34a35287024b341db16139a402508aaea8ec955"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -13510,7 +13510,7 @@ dependencies = [
 [[package]]
 name = "tokio-util"
 version = "0.7.11"
-source = "git+ssh://git@github.com/iotaledger/tokio-madsim-fork.git?branch=main#e34a35287024b341db16139a402508aaea8ec955"
+source = "git+ssh://git@github.com/miker83z/tokio-madsim-fork.git?branch=main#e34a35287024b341db16139a402508aaea8ec955"
 dependencies = [
  "bytes",
  "futures-core",
