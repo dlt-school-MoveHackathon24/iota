@@ -1153,6 +1153,9 @@ importers:
 
   dapps/client-provider:
     devDependencies:
+      '@iota/dapp-kit':
+        specifier: workspace:*
+        version: link:../../sdk/dapp-kit
       '@iota/iota-sdk':
         specifier: workspace:*
         version: link:../../sdk/typescript

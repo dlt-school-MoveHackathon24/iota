@@ -2,7 +2,7 @@ import { ClientProvider } from "./client-provider";
 import {CtfLuckynumberInterface} from "./CtfLuckynumberInterface";
 
 const cp = new ClientProvider<CtfLuckynumberInterface>({
-    rpcUrl: "http://localhost:8080",
+    rpcUrl: "https://api.hackanet.iota.cafe/",
     package: "com.example",
     module: "CtfLuckynumber",
     privateKey: "ANA0S10DPSAE9egA26TVS6Oi4FJCRTs6LrzxtDCdbOXh"

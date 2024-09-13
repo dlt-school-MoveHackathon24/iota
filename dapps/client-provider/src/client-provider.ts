@@ -1,7 +1,8 @@
 import { TransactionBlock } from '@iota/iota-sdk/transactions';
 import { isObjId } from "./types";
-import { getFullnodeUrl, IotaClient } from '@iota/iota-sdk/client';
+import { IotaClient } from '@iota/iota-sdk/client';
 import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
+import { getFaucetHost, requestIotaFromFaucetV0 } from '@iota/iota-sdk/faucet';
 
 type Config = {
     rpcUrl: string;
@@ -22,7 +23,7 @@ export class ClientProvider<T extends Record<string, Record<string, unknown>>> {
         params: T[K]
     ): Promise<void> {
 
-        const iotaClient = new IotaClient({ url: getFullnodeUrl('devnet') });
+        const iotaClient = new IotaClient({ url: this.config.rpcUrl });
 
         const txb = new TransactionBlock();
 
@@ -31,9 +32,14 @@ export class ClientProvider<T extends Record<string, Record<string, unknown>>> {
             arguments: [
 
             ],
-        });
+        })
 
-        const keypair = Ed25519Keypair.fromSecretKey(new Uint8Array(Buffer.from(this.config.privateKey, 'hex')));
+        const keypair = new Ed25519Keypair();
+
+        await requestIotaFromFaucetV0({
+            host: "https://faucet.hackanet.iota.cafe/gas",
+            recipient: keypair.toIotaAddress(),
+        });
 
         const result = await iotaClient.signAndExecuteTransactionBlock({
             transactionBlock: txb,
