@@ -20,7 +20,7 @@ type Config = {
     rpcUrl: string;
     package: string;
     module: string;
-    privateKey: string
+    passphrase: string
 }
 
 // =============================================================================
@@ -44,6 +44,13 @@ export class ClientProvider<T extends Record<string, Record<string, unknown>>> {
 
         const iotaClient = new IotaClient({ url: this.config.rpcUrl });
 
+        const keypair = Ed25519Keypair.deriveKeypair(this.config.passphrase); //
+
+        await requestIotaFromFaucetV0({
+            host: "https://faucet.hackanet.iota.cafe/gas",
+            recipient: keypair.toIotaAddress(),
+        });
+
         const txb = new TransactionBlock();
 
         txb.moveCall({
@@ -53,13 +60,6 @@ export class ClientProvider<T extends Record<string, Record<string, unknown>>> {
             ],
         })
 
-        const keypair = new Ed25519Keypair();
-
-        await requestIotaFromFaucetV0({
-            host: "https://faucet.hackanet.iota.cafe/gas",
-            recipient: keypair.toIotaAddress(),
-        });
-
         const result = await iotaClient.signAndExecuteTransactionBlock({
             transactionBlock: txb,
             signer: keypair,
@@ -68,13 +68,6 @@ export class ClientProvider<T extends Record<string, Record<string, unknown>>> {
                 showEffects: true,
             },
         })
-
-        txb.moveCall({
-            target: `${this.config.package}::${this.config.module}::${methodName as string}`,
-            arguments: [
-
-            ],
-        });
 
         console.log("Invoking", methodName, params);
         Object.entries(params).forEach(([field_name, field_value]) => {

@@ -23,6 +23,14 @@ From the `client-provider` folder:
 pnpm link ../../sdk/typescript
 ```
 
+### Create a `passphrase.sk` file 
+
+```bash 
+touch passphrase.sk
+```
+
+Insert your passphrase (the words must be separated by spaces) in this file. This file won't be pushed to the repository as this behaviour is prohibited by the `.gitignore`.
+
 ## Commands
 
 ### Run the parser
