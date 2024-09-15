@@ -1,8 +1,20 @@
-import { TransactionBlock } from '@iota/iota-sdk/transactions';
+// =============================================================================
+// Imports
+// =============================================================================
+
 import { isObjId } from "./types";
+
+import { TransactionBlock } from '@iota/iota-sdk/transactions';
 import { IotaClient } from '@iota/iota-sdk/client';
 import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
 import { getFaucetHost, requestIotaFromFaucetV0 } from '@iota/iota-sdk/faucet';
+
+// =============================================================================
+
+
+// =============================================================================
+// Types
+// =============================================================================
 
 type Config = {
     rpcUrl: string;
@@ -10,6 +22,13 @@ type Config = {
     module: string;
     privateKey: string
 }
+
+// =============================================================================
+
+
+// =============================================================================
+// Classes
+// =============================================================================
 
 export class ClientProvider<T extends Record<string, Record<string, unknown>>> {
     private config: Config;
@@ -73,3 +92,5 @@ export class ClientProvider<T extends Record<string, Record<string, unknown>>> {
     }
 
 }
+
+// =============================================================================

@@ -1,26 +1,29 @@
+// =============================================================================
+// Imports
+// =============================================================================
+
 import * as fs from 'fs';
 import * as path from 'path';
 
-// Define the interface for the parsed Move function
+// =============================================================================
+
+
+// =============================================================================
+// Types
+// =============================================================================
+
+// Interface for the parsed Move function
 interface ParsedFunction {
     name: string;
-    parameters: { [key: string]: string };  // Changed to an object with key-value pairs
+    parameters: { [key: string]: string };  // Object with key-value pairs
 }
 
-// Read the Move file content from a command-line argument
-const args = process.argv.slice(2);
-if (args.length < 1) {
-    console.error('Please provide the path to the Move contract file.');
-    process.exit(1);
-}
+// =============================================================================
 
-const moveFilePath = args[0];
-if (!fs.existsSync(moveFilePath)) {
-    console.error(`File not found: ${moveFilePath}`);
-    process.exit(1);
-}
 
-const moveFileContent = fs.readFileSync(moveFilePath, 'utf8');
+// =============================================================================
+// Functions
+// =============================================================================
 
 // Function to parse the module name from the Move file
 function parseModuleName(moveFileContent: string): string {
@@ -86,7 +89,29 @@ function generateType(functions: ParsedFunction[], moduleName: string): string {
     return typeString;
 }
 
-// Parse the module name and move file content
+// =============================================================================
+
+
+// =============================================================================
+// Main
+// =============================================================================
+
+const args = process.argv.slice(2);
+if (args.length < 1) {
+    console.error('Please provide the path to the Move contract file.');
+    process.exit(1);
+}
+
+// Move contract file
+const moveFilePath = args[0];
+if (!fs.existsSync(moveFilePath)) {
+    console.error(`File not found: ${moveFilePath}`);
+    process.exit(1);
+}
+
+const moveFileContent = fs.readFileSync(moveFilePath, 'utf8');
+
+// Parse the module name and the Move file content
 const moduleName = parseModuleName(moveFileContent);
 const parsedFunctions = parseMoveContract(moveFileContent);
 
@@ -98,3 +123,5 @@ const outputPath = path.join(__dirname, `${moduleName}.ts`);
 fs.writeFileSync(outputPath, typeContent);
 
 console.log(`Contract type generated: ${outputPath}`);
+
+// =============================================================================
