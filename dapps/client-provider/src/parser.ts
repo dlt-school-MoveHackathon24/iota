@@ -5,6 +5,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+// TODO: convert to doc imports
+// Make file name cammel case
+// add interfaces to dist a folder in .gitignore
+// Autogenerate modulename
+// Rename command to parse-module instead of parse
+
 // =============================================================================
 
 
@@ -41,7 +47,7 @@ function parseModuleName(moveFileContent: string): string {
 }
 
 // Function to parse the Move file and extract function signatures
-function parseMoveContract(moveFileContent: string): ParsedFunction[] {
+function parseMoveContract(moveFileContent: string) {
     const functions: ParsedFunction[] = [];
     const regex = /fun\s+(\w+)\s*\(([^)]*)\)\s*\{?/g;
     let match;
@@ -74,7 +80,7 @@ function parseMoveContract(moveFileContent: string): ParsedFunction[] {
 }
 
 // Function to generate TypeScript type
-function generateType(functions: ParsedFunction[], moduleName: string): string {
+function generateType(functions: ParsedFunction[], moduleName: string) {
     let typeString = 'import {ObjId} from "./types" \n\n export type ' + moduleName + ' = {\n';
 
     functions.forEach(fn => {
@@ -121,7 +127,3 @@ const typeContent = generateType(parsedFunctions, moduleName);
 // Save the type to a file based on the module name
 const outputPath = path.join(__dirname, `${moduleName}.ts`);
 fs.writeFileSync(outputPath, typeContent);
-
-console.log(`Contract type generated: ${outputPath}`);
-
-// =============================================================================

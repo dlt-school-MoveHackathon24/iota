@@ -1,89 +1,59 @@
-// =============================================================================
-// Imports
-// =============================================================================
-
-import { isObjId } from "./types";
-
+import { isObjId, ObjId } from "./types";
 import { TransactionBlock } from '@iota/iota-sdk/transactions';
 import { IotaClient } from '@iota/iota-sdk/client';
 import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
-import { getFaucetHost, requestIotaFromFaucetV0 } from '@iota/iota-sdk/faucet';
 
-// =============================================================================
-
-
-// =============================================================================
-// Types
-// =============================================================================
-
-type Config = {
-    rpcUrl: string;
-    package: string;
-    module: string;
-    passphrase: string
-}
-
-// =============================================================================
-
-
-// =============================================================================
-// Classes
-// =============================================================================
-
+/**
+ * Client provider
+ * //TODO: describe the class
+ */
 export class ClientProvider<T extends Record<string, Record<string, unknown>>> {
-    private config: Config;
+    constructor(private config: {
+        rpcUrl: string;
+        package: string;
+        module: string;
+        signer: Ed25519Keypair
+    }) { }
 
-    constructor(config: Config) {
-        this.config = config;
-    }
-
-    async invoke<K extends keyof T>(
-        methodName: K,
-        params: T[K]
-    ): Promise<void> {
-
-        const iotaClient = new IotaClient({ url: this.config.rpcUrl });
-
-        const keypair = Ed25519Keypair.deriveKeypair(this.config.passphrase); //
-
-        await requestIotaFromFaucetV0({
-            host: "https://faucet.hackanet.iota.cafe/gas",
-            recipient: keypair.toIotaAddress(),
-        });
-
+    /**
+     * TODO: describe the method
+     * @param methodName
+     * @param params
+     * @returns
+     * @throws
+    */
+    public async invoke<K extends keyof T>(methodName: K, params: T[K]) {
         const txb = new TransactionBlock();
 
         txb.moveCall({
-            target: `${this.config.package}::${this.config.module}::${methodName as string}`,
+            target: `${this.config.package}::${this.config.module}::${methodName.toString()}`,
             arguments: [
+                ...Object.entries(params).map(([field_name, field_value]) => {
+                    if (isObjId(field_value)) {
+                        const id = (field_value as ObjId).id;
+                        return txb.object(id)//TODO: brutto, da fare meglio
+                    }
+                    if (typeof field_value === 'string') {
+                        return txb.pure(field_value, 'string')//TODO: rimuovere depracated
+                    }
+                    if (typeof field_value === 'number') {
+                        return txb.pure(field_value, 'u64')//TODO: rimuovere depracated
+                    }
 
+                    throw new Error(`Unknown type for ${field_name} with value ${field_value}`);
+                }),
             ],
         })
 
-        const result = await iotaClient.signAndExecuteTransactionBlock({
+        const iotaClient = new IotaClient({ url: this.config.rpcUrl });
+
+        return await iotaClient.signAndExecuteTransactionBlock({
             transactionBlock: txb,
-            signer: keypair,
+            signer: this.config.signer,
             requestType: 'WaitForLocalExecution',
             options: {
                 showEffects: true,
             },
         })
-
-        console.log("Invoking", methodName, params);
-        Object.entries(params).forEach(([field_name, field_value]) => {
-            console.log(field_name, field_value);
-            if (isObjId(field_value)) {
-                console.log("Is ObjId");
-            }
-            if (typeof field_value === 'string') {
-                console.log("Is string");
-            }
-            if (typeof field_value === 'number') {
-                console.log("Is number");
-            }
-        });
     }
-
 }
-
-// =============================================================================
