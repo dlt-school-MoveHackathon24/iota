@@ -1,4 +1,4 @@
-import { isObjId, ObjId } from "./types";
+import { isObjId, ObjId } from "../types";
 import { TransactionBlock } from '@iota/iota-sdk/transactions';
 import { IotaClient } from '@iota/iota-sdk/client';
 import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
@@ -7,13 +7,27 @@ import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
  * Client provider
  * //TODO: describe the class
  */
-export class ClientProvider<T extends Record<string, Record<string, unknown>>> {
+export class ClientProvider<Idl extends Record<string, Record<string, unknown>>> {
     constructor(private config: {
         rpcUrl: string;
         package: string;
         module: string;
         signer: Ed25519Keypair
-    }) { }
+    }) {}
+
+     /**
+     * Proxy-based method to allow `co.getFlag()` style calls
+     */
+     public get contract() {
+        return new Proxy(this, {
+            get: (target, methodName: string) => {
+                if (typeof target.invoke === 'function') {
+                    return (params: any) => target.invoke(methodName as keyof Idl, params);
+                }
+                throw new Error(`Method ${methodName} is not a valid contract function`);
+            }
+        });
+    }
 
     /**
      * TODO: describe the method
@@ -22,7 +36,7 @@ export class ClientProvider<T extends Record<string, Record<string, unknown>>> {
      * @returns
      * @throws
     */
-    public async invoke<K extends keyof T>(methodName: K, params: T[K]) {
+    public async invoke<K extends keyof Idl>(methodName: K, params: Idl[K]) {
         const txb = new TransactionBlock();
 
         txb.moveCall({
@@ -39,6 +53,8 @@ export class ClientProvider<T extends Record<string, Record<string, unknown>>> {
                     if (typeof field_value === 'number') {
                         return txb.pure(field_value, 'u64')//TODO: rimuovere depracated
                     }
+
+                    // TODO: add support for multiple types
 
                     throw new Error(`Unknown type for ${field_name} with value ${field_value}`);
                 }),

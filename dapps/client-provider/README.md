@@ -44,3 +44,9 @@ npm run parser <path/to/your/contract.move>
 ```bash 
 npm run tests
 ```
+
+
+### Per Stefano
+
+npm run parse-module src/modules/luckynumber.move
+

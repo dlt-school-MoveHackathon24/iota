@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "parser": "ts-node src/parser.ts",
-    "tests": "ts-node src/tests.ts"
+    "parse-module": "ts-node src/module-parser/parse-module.ts",
+    "tests": "ts-node src/tests/tests.ts"
   },
   "keywords": [],
   "author": "",
