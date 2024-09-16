@@ -33,20 +33,20 @@ Insert your passphrase (the words must be separated by spaces) in this file. Thi
 
 ## Commands
 
-### Run the parser
+### Run the parser module
 
 ```bash 
-npm run parser <path/to/your/contract.move>
+npm run parse-module <path/to/your/contract.move>
 ```
 
-### Run the test
+#### Example
+
+```bash 
+npm run parse-module src/modules/luckynumber.move
+```
+
+### Execute the main script to test the client provider
 
 ```bash 
 npm run tests
 ```
-
-
-### Per Stefano
-
-npm run parse-module src/modules/luckynumber.move
-
