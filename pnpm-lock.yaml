@@ -1152,6 +1152,10 @@ importers:
         version: 5.3.3
 
   dapps/client-provider:
+    dependencies:
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
     devDependencies:
       '@iota/dapp-kit':
         specifier: workspace:*

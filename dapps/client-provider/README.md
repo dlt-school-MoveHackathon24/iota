@@ -23,13 +23,24 @@ From the `client-provider` folder:
 pnpm link ../../sdk/typescript
 ```
 
-### Create a `passphrase.sk` file 
+### Create a `.env` file 
 
 ```bash 
-touch passphrase.sk
+touch .env
 ```
 
-Insert your passphrase (the words must be separated by spaces) in this file. This file won't be pushed to the repository as this behaviour is prohibited by the `.gitignore`.
+This file must define the passphrase for the Ed25519 private key, the RPC url for interacting with the chain and the faucet url.
+
+#### Example
+
+```bash
+#.env
+
+IOTA_CP_PASSPHRASE=insert your passphrase here
+
+IOTA_CP_RPC=https://api.hackanet.iota.cafe/
+IOTA_CP_FAUCET=https://faucet.hackanet.iota.cafe/gas
+```
 
 ## Commands
 
