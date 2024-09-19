@@ -1,8 +1,7 @@
-import * as fs from 'fs';
 import dotenv from 'dotenv';
 
 import { ClientProvider } from "../idl-provider/idl-provider";
-import { CtfLuckynumberIdl, moduleName } from "../../CtfLuckynumberIdl";
+import { CtfLuckynumberIdl, moduleName } from "../idl/CtfLuckynumberIdl";
 
 import { requestIotaFromFaucetV0 } from '@iota/iota-sdk/faucet';
 import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
@@ -17,6 +16,7 @@ async function main() {
     if(!process.env.IOTA_CP_PASSPHRASE || !process.env.IOTA_CP_RPC || !process.env.IOTA_CP_FAUCET) 
         throw new Error("Error while loading the environment variables. Make sure a correct .env file exists.");
 
+    // Just generating a keypair for the test
     const passphrase = process.env.IOTA_CP_PASSPHRASE;
     const signer = Ed25519Keypair.deriveKeypair(passphrase)
 
@@ -25,15 +25,17 @@ async function main() {
         recipient: signer.toIotaAddress(),
     })
 
+    // Building an Iota client provider to interact with the smart contract module
     const cp = new ClientProvider<CtfLuckynumberIdl>({
         rpcUrl: process.env.IOTA_CP_RPC,
-        package: "0x699171bd7ce9062b07716e08068d27350d6d7c1f40a141ae0774f962f3d52f33", //TODO: make a variable
+        package: "0x119933ce0b523bfda93d677b9024991f4f084d2d5fa3657c256a689fe572bdaf",// Your package address
         module: moduleName,
         signer
     });
 
+    // Calling the get_flag function from the smart contract (challenge 2 of the CTF)
     const response = await cp.invoke("get_flag", { 
-        user_counter: { id: "0x02e95725b95a33992591bdeebe4fa84ce9570faf8808b58b1760229f83064043" }, 
+        user_counter: { id: "0x0a9a9c966c3022938ca8e63997da4c21d144bbd6561aa318ea84364f6359407f" },
         lucky_num: 1 
     })
 
