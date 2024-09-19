@@ -29,6 +29,7 @@ From the `client-provider` folder:
 ```bash 
 cd dapps/client-provider
 pnpm link ../../sdk/typescript
+pnpm install 
 ```
 
 ### 📄 Create a `.env` file 
