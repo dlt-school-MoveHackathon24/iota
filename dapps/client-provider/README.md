@@ -1,20 +1,20 @@
-# Client provider
+# 🚀 Client provider
 
-## Introduction
+## 🎉 Introduction
 
 Welcome to the Client Provider, a robust solution designed for seamless and secure interaction with Move smart contracts. In the rapidly evolving landscape of blockchain technology, maintaining the alignment between your on-chain contracts and client-side code is crucial. Our Client Provider ensures that your interactions with Move contracts are not only efficient but also type-safe, reducing the risk of errors and vulnerabilities.
 
 This tool automatically generates a TypeScript interface tailored to your specific Move contracts, ensuring that your client-side code remains up-to-date with the latest contract changes. By leveraging TypeScript’s strong typing system, our Client Provider catches potential bugs at **COMPILE** time, significantly lowering the risk of runtime errors and enhancing overall code safety.
 
-## Get started
+## 🏁 Get started
 
-### Clone the repository branch
+### 🔄 Clone the repository branch
 
 ```bash
 git clone -b movers/client-provider git@github.com:temp-dlt-school-24-org/iota.git
 ```
 
-### Build and link the TypeScript SDK
+### 🛠️ Build and link the TypeScript SDK
 
 From the root `iota` folder:
 
@@ -29,7 +29,7 @@ cd dapps/client-provider
 pnpm link ../../sdk/typescript
 ```
 
-### Create a `.env` file 
+### 📄 Create a `.env` file 
 
 ```bash 
 touch .env
@@ -37,7 +37,7 @@ touch .env
 
 This file must define the passphrase for the Ed25519 private key, the RPC url for interacting with the chain and the faucet url.
 
-#### Example
+#### ✏️ Example
 
 ```bash
 #.env
@@ -48,7 +48,7 @@ IOTA_CP_RPC=https://api.hackanet.iota.cafe/
 IOTA_CP_FAUCET=https://faucet.hackanet.iota.cafe/gas
 ```
 
-## How to use
+## 🧑‍💻 How to use
 
 Once you have deployed a contract module to the chain, you can use the client provider to interact with it. Before you have to parse the module to generate the IDL:
 
@@ -91,24 +91,24 @@ const response = await cp.invoke("moduleName", {
 })
 ```
 
-## Example: Calling the get_flag method of the luckynumber module
+## 📝 Example: Calling the get_flag method of the luckynumber module
 
-Deploy the example contract:
+📦 Deploy the example contract:
 ```bash
 cd src/contracts/challenge_2
 iota client publish --gas-budget 5000000000
 ```
 
-Get the transaction digest and search it in the [explorer](https://explorer.hackanet.iota.cafe/) and take the `PACKAGE_ADDRESS` and the user `COUNTER_ADDRESS`.
+🔍  Get the transaction digest and search it in the [explorer](https://explorer.hackanet.iota.cafe/) and take the `PACKAGE_ADDRESS` and the user `COUNTER_ADDRESS`.
 
 ![Screen deploy](./images/explorer-deploy.png)
 
-Return to the client provider folder:
+🔙 Return to the client provider folder:
 ```bash
 cd ../../../
 ```
 
-Parse the luckynumber module:
+📜 Parse the luckynumber module:
 ```bash 
 npm run parse-module src/contracts/challenge_2/sources/luckynumber.move
 ```
@@ -129,7 +129,7 @@ import {ObjId} from "../types"
 export const moduleName = "luckynumber";
 ```
 
-At the end you can run interact with the contract (`npm run tests`) by inserting the `PACKAGE_ADDRESS` and the user `COUNTER_ADDRESS` obtained from the explorer:
+🧪 At the end you can run interact with the contract (`npm run tests`) by inserting the `PACKAGE_ADDRESS` and the user `COUNTER_ADDRESS` obtained from the explorer:
 
 ```ts
 import { ClientProvider } from "../idl-provider/idl-provider";
