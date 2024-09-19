@@ -123,8 +123,8 @@ module ctf::SupplyChain {
         );
     }
  
-    /// Function to update environmental data (only in Shared state)
-    public fun update_environmental_data(
+    /// Function to update sensor data (only in Shared state)
+    public fun update_sensor_data(
         product: &mut Product,
         sensor_data: u64,
         ctx: &mut TxContext
