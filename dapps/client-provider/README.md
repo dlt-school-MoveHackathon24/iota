@@ -19,7 +19,8 @@ cd iota
 
 From the root `iota` folder:
 
-```bash 
+```bash
+pnpm install 
 pnpm sdk build
 ```
 
