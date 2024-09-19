@@ -51,19 +51,19 @@ After installation, you can begin to use the SupplyChain module within your IOTA
 ### Creating a Product
 To create a new product within the supply chain, use the following function:
 ```bash
-<PackageID>::SupplyChain::create_product
+<PackageID>::SupplyChain::create_product <min_sensor_data> <max_sensor_data>
 ```
 
 ### Assigning a Distributor
 To assign a distributor to a product, use the following function:
 ```bash
-SupplyChain::assign_distributor(ctx, &mut product, distributor_address);
+SupplyChain::assign_distributor  <Product_ID> <distributor_address>
 ```
 
 ### Confirming Product Delivery
-To confirm the delivery of a product and transfer ownership to the buyer, use the following function:
+To confirm the delivery of a product and transfer ownership to the buyer, the buyer will have to use the following function:
 ```bash
-SupplyChain::confirm_delivery(ctx, &mut product);
+SupplyChain::confirm_delivery <Product_ID>
 ```
 
 ## Contributing
