@@ -19,8 +19,9 @@ module ctf::SupplyChain {
         distributor: address,  // Distributor's address (optional)
         buyer: address,        // Buyer's address (optional)
         sensor_data: u64,      // Recorded temperature
-        min_sensor_data: u64,
-        max_sensor_data: u64,
+        min_sensor_data: u64,  // Minimum allowed temperature
+        max_sensor_data: u64,  // Maximum allowed temperature
+        product_validity: bool // Validity of the product based on sensor data
     }
 
     /// Event for state change
@@ -46,19 +47,20 @@ module ctf::SupplyChain {
             sensor_data: 0,
             max_sensor_data: max_sensor_data,  // Set the max sensor data
             min_sensor_data: min_sensor_data,  // Set the min sensor data
+            product_validity: true,            // Set initial validity to true
         };
 
-    // Emit an event for product creation
-    event::emit<StateChangedEvent>(
-        StateChangedEvent {
-            product_address: object::uid_to_address(&product.id),
-            new_state: STATE_OWNED,
-        }
-    );
+        // Emit an event for product creation
+        event::emit<StateChangedEvent>(
+            StateChangedEvent {
+                product_address: object::uid_to_address(&product.id),
+                new_state: STATE_OWNED,
+            }
+        );
 
-    // Storing the product in global storage
-    transfer::public_transfer(product, producer_address);
-}
+        // Storing the product in global storage
+        transfer::public_transfer(product, producer_address);
+    }
 
 
     /// Function to assign the distributor (executed by the producer)
@@ -128,10 +130,10 @@ module ctf::SupplyChain {
         ctx: &mut TxContext
     ){
         let participant_address = tx_context::sender(ctx);
- 
+
         // Verify that the product is in Shared state
         assert!(product.state == STATE_SHARED, 3);
- 
+
         // Verify that the participant is one of the authorized entities
         assert!(
             participant_address == product.producer ||
@@ -139,9 +141,15 @@ module ctf::SupplyChain {
             participant_address == product.buyer,
             4
         );
- 
-        // Update the data
+
+        // Update the sensor data
         product.sensor_data = sensor_data;
+
+        // Check if the sensor data is within the valid range
+        if (sensor_data < product.min_sensor_data || sensor_data > product.max_sensor_data) {
+            // Mark the product as invalid if the data is out of range
+            product.product_validity = false;
+        }
     }
  
     /// Function to confirm arrival and transfer ownership to the buyer
