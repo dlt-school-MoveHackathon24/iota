@@ -72,9 +72,9 @@ To change the object ownership use this function:
 SupplyChain::change_to_shared <Product_ID> 
 ```
 ### Changing the object sensor_data
-To change the environmental sensor data use this function:
+To change the sensor data use this function:
 ```bash
-SupplyChain::update_environmental_data <Product_ID>  <updated_sensor_data>
+SupplyChain::update_sensor_data <Product_ID>  <updated_sensor_data>
 ```
 
 ### Confirming Product Delivery
