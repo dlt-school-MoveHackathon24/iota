@@ -1,6 +1,6 @@
 # 🚀 Client provider
 
-## 🎉 Introduction
+## Introduction
 
 Welcome to the Client Provider, a robust solution designed for seamless and secure interaction with Move smart contracts. In the rapidly evolving landscape of blockchain technology, maintaining the alignment between your on-chain contracts and client-side code is crucial. Our Client Provider ensures that your interactions with Move contracts are not only efficient but also type-safe, reducing the risk of errors and vulnerabilities.
 
@@ -150,3 +150,5 @@ const response = await cp.invoke("get_flag", {
         lucky_num: 1 
     })
 ```
+
+🔍 If you mistype the method name, such as get_flag, the TypeScript compiler will catch the error, notifying you before runtime. This ensures safe and reliable code, preventing bugs early in the development process.
