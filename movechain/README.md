@@ -60,6 +60,23 @@ To assign a distributor to a product, use the following function:
 SupplyChain::assign_distributor  <Product_ID> <distributor_address>
 ```
 
+### Assigning a Buyer
+To assign a buyer to a product, use the following function:
+```bash
+SupplyChain::assign_buyer  <Product_ID> <buyer_address>
+```
+
+### Changing the object from owned to shared
+To change the object ownership use this function:
+```bash
+SupplyChain::change_to_shared <Product_ID> 
+```
+### Changing the object sensor_data
+To change the environmental sensor data use this function:
+```bash
+SupplyChain::update_environmental_data <Product_ID>  <updated_sensor_data>
+```
+
 ### Confirming Product Delivery
 To confirm the delivery of a product and transfer ownership to the buyer, the buyer will have to use the following function:
 ```bash
