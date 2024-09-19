@@ -12,6 +12,7 @@ This tool automatically generates a TypeScript interface tailored to your specif
 
 ```bash
 git clone -b movers/client-provider git@github.com:temp-dlt-school-24-org/iota.git
+cd iota
 ```
 
 ### 🛠️ Build and link the TypeScript SDK
