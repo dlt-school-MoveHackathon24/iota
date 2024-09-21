@@ -88,8 +88,8 @@ const cp = new ClientProvider<MyModuleIdl>({
     signer: 'Your keypair'
 })
 
-const response = await cp.invoke("moduleName", { 
-    user_counter: { param1: "0x..ad36" },
+const response = await cp.invoke("my_method", { 
+    param1: { id: "0x..ad36" },
     param2: 42 
 })
 ```
@@ -102,7 +102,7 @@ cd src/contracts/challenge_2
 iota client publish --gas-budget 5000000000
 ```
 
-🔍  Get the transaction digest and search it in the [explorer](https://explorer.hackanet.iota.cafe/) and take the `PACKAGE_ADDRESS` and the user `COUNTER_ADDRESS`.
+🔍  Get the transaction digest, search it in the [explorer](https://explorer.hackanet.iota.cafe/) and take the `PACKAGE_ADDRESS` and the user `COUNTER_ADDRESS`.
 
 ![Screen deploy](./images/explorer-deploy.png)
 
@@ -125,7 +125,7 @@ The parser produces an IDL in the `src/idl` folder.
 
 import {ObjId} from "../types" 
 
- export type CtfLuckynumberIdl = {
+export type CtfLuckynumberIdl = {
   get_flag: { user_counter: ObjId, lucky_num: number },
 };
 
@@ -152,3 +152,9 @@ const response = await cp.invoke("get_flag", {
 ```
 
 🔍 If you mistype the method name, such as get_flag, the TypeScript compiler will catch the error, notifying you before runtime. This ensures safe and reliable code, preventing bugs early in the development process.
+
+📚 References
+We took inspiration from Anchor, a Solana blockchain framework that allows you to generate IDLs for the contract.
+
+🤝 Contributions
+Any contribution is welcome. For example, in the current version, only numeric and address types are taken into account. It would be useful to extend the library to support all possible types.
