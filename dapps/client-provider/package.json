@@ -1,0 +1,36 @@
+{
+  "name": "client-provider",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "parse-module": "ts-node src/module-parser/parse-module.ts",
+    "tests": "ts-node src/tests/tests.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@iota/dapp-kit": "workspace:*",
+    "@iota/iota-sdk": "workspace:*",
+    "@tsconfig/recommended": "^1.0.1",
+    "@types/eslint": "^8.2.2",
+    "@types/eslint-plugin-prettier": "^3.1.0",
+    "@types/mz": "^2.7.2",
+    "@types/prettier": "^2.1.5",
+    "@types/yaml": "^1.9.7",
+    "@typescript-eslint/eslint-plugin": "^4.6.0",
+    "@typescript-eslint/parser": "^4.6.0",
+    "eslint": "^7.12.1",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.1.2",
+    "start-server-and-test": "^1.11.6",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.0.5"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}
