@@ -154,7 +154,7 @@ const response = await cp.invoke("get_flag", {
 🔍 If you mistype the method name, such as get_flag, the TypeScript compiler will catch the error, notifying you before runtime. This ensures safe and reliable code, preventing bugs early in the development process.
 
 ## 📚 References
-We took inspiration from Anchor, a Solana blockchain framework that allows you to generate IDLs for the contract.
+We took inspiration from [Anchor](https://www.anchor-lang.com/), a [Solana blockchain](https://solana.com/) framework that allows you to generate [IDLs ](https://www.quicknode.com/guides/solana-development/anchor/what-is-an-idl)for the contract.
 
 ## 🤝 Contributions
 Any contribution is welcome. For example, in the current version, only numeric and address types are taken into account. It would be useful to extend the library to support all possible types.
