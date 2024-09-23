@@ -263,47 +263,5 @@ if __name__ == "__main__":
 
 
 """
-iota client ptb \
-    --move-call iota::tx_context::sender \
-	--assign sender \
-    --move-call 0xa4743a6554c75115db0fd36960f7c39012288daeecc6a624a0600fa65a890c0e::vesting::create_strategy_not_for_coin  2u8 10 \
-    --assign strategy \
-    --move-call 0xa4743a6554c75115db0fd36960f7c39012288daeecc6a624a0600fa65a890c0e::vesting::create_vester_and_share  \
-    "<0x9a80f8d5de67c65b0dbe4e38cfff9624f35ee9705a2def73fd0d6a7e156ea161::ExampleCoin::EXAMPLECOIN, u64>"  \
-    strategy 1726743803978 "some(1000000)" none none \
-    --gas-budget 50000000
-
-iota client ptb \
-    --move-call iota::tx_context::sender \
-	--assign sender \
-    --move-call 0xa4743a6554c75115db0fd36960f7c39012288daeecc6a624a0600fa65a890c0e::vesting::create_and_initialize_vester  2 10 \
-    "<0x9a80f8d5de67c65b0dbe4e38cfff9624f35ee9705a2def73fd0d6a7e156ea161::ExampleCoin::EXAMPLECOIN, u64>"  \
-    strategy 1726743803978 1000000 none none \
-    --gas-budget 50000000
-
-    iota client ptb \
-    --move-call iota::tx_context::sender \
-	--assign sender \
-    --move-call 0xa4743a6554c75115db0fd36960f7c39012288daeecc6a624a0600fa65a890c0e::vesting::create_vester_and_share  \
-    "<0x9a80f8d5de67c65b0dbe4e38cfff9624f35ee9705a2def73fd0d6a7e156ea161::ExampleCoin::EXAMPLECOIN, u64>"  \
-    @0x946e560d91f4419878d9dc5ab63adb144970f72c981d60d11b561f831d9fbb04 1726743803978 1000000 none none \
-    --gas-budget 50000000
-
-
-    iota client ptb \
-    --move-call 0xa4743a6554c75115db0fd36960f7c39012288daeecc6a624a0600fa65a890c0e::vesting::create_vester_and_share  \
-    "<0x9a80f8d5de67c65b0dbe4e38cfff9624f35ee9705a2def73fd0d6a7e156ea161::ExampleCoin::EXAMPLECOIN, u64>"  \
-    @0x946e560d91f4419878d9dc5ab63adb144970f72c981d60d11b561f831d9fbb04 1726743803978 1000000 none none \
-    --gas-budget 50000000
-
-    iota client call \
-    --package 0xa4743a6554c75115db0fd36960f7c39012288daeecc6a624a0600fa65a890c0e \
-    --module vesting --function create_vester_and_share \
-    --type-args 0x9a80f8d5de67c65b0dbe4e38cfff9624f35ee9705a2def73fd0d6a7e156ea161::ExampleCoin::EXAMPLECOIN u64 \
-    --args 0x946e560d91f4419878d9dc5ab63adb144970f72c981d60d11b561f831d9fbb04 1726743803978 1000000 none none \
-    --gas-budget 50000000
-
-    iota client ptb --move-call 0xa4743a6554c75115db0fd36960f7c39012288daeecc6a624a0600fa65a890c0e::vesting::init_strategy_not_for_coin     2 10 --gas-budget 5000000
-    iota client call --package  0xa4743a6554c75115db0fd36960f7c39012288daeecc6a624a0600fa65a890c0e --module vesting --function init_strategy_not_for_coin    --args 2 10 --gas-budget 5000000
-
+This was abandonned to move to the unit testing directly
 """
