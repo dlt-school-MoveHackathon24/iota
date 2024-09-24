@@ -1,7 +1,12 @@
 // src/App.tsx
 
-import React, { useState } from 'react';
-import { ConnectButton, useCurrentAccount, useSignTransactionBlock, useIotaClient } from '@iota/dapp-kit';
+import React, { useState, useEffect } from 'react';
+import {
+  useCurrentAccount,
+  ConnectButton,
+  useSignTransactionBlock,
+  useIotaClient,
+} from '@iota/dapp-kit';
 import { TransactionBlock } from '@iota/iota-sdk/transactions';
 import { sponsorTransaction } from './utils/SponsorTransaction';
 import { calculateDynamicGasFee } from './utils/calculateDynamicGasFee';
@@ -16,25 +21,26 @@ export interface MainTxDetails {
 
 export function App() {
   const client = useIotaClient();
-  const currentAccount = useCurrentAccount();
   const { mutateAsync: signTransactionBlock } = useSignTransactionBlock();
   const [loading, setLoading] = useState(false);
 
+  // Declare currentAccount
+  const currentAccount = useCurrentAccount();
+
   // State variables
-  const [userAddress, setUserAddress] = useState('');
   const [userTokens, setUserTokens] = useState<Token[]>([]);
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
   const [tokenAmount, setTokenAmount] = useState<bigint>(BigInt(0));
-  const [gasPaymentTx, setGasPaymentTx] = useState<any>(null);
-  const [gasPaymentExecuted, setGasPaymentExecuted] = useState(false);
+  const [servicePaymentTx, setServicePaymentTx] = useState<any>(null);
+  const [servicePaymentExecuted, setServicePaymentExecuted] = useState(false);
   const [mainTx, setMainTx] = useState<any>(null);
   const [mainTxExecuted, setMainTxExecuted] = useState(false);
   const [executedTx, setExecutedTx] = useState<any>(null);
 
   // Step management
   const [step, setStep] = useState<
-    'addressInput' | 'tokenSelection' | 'mainTransaction' | 'review' | 'transaction' | 'completed'
-  >('addressInput');
+    'tokenSelection' | 'servicePayment' | 'mainTransaction' | 'review' | 'transaction' | 'completed'
+  >('tokenSelection');
 
   // State variables for main transaction
   const [mainTxDetails, setMainTxDetails] = useState<MainTxDetails>({
@@ -58,36 +64,145 @@ export function App() {
     return tokenNameMapping[coinType] || 'Unknown Token';
   };
 
-  // Fetch user's tokens when they provide an address
+  // Fetch user's tokens when the wallet connects
   const fetchTokens = async () => {
+    if (!currentAccount?.address) return;
     setLoading(true);
     try {
-      const tokens = await fetchUserTokens(userAddress);
+      const tokens = await fetchUserTokens(currentAccount!.address);
       setUserTokens(tokens);
       if (tokens.length > 0) {
         setStep('tokenSelection');
       } else {
-        alert('No tokens found at the provided address.');
+        alert('No tokens found in the connected wallet.');
       }
     } catch (error) {
       console.error('Error fetching user tokens:', error);
-      alert('Failed to fetch tokens. Please check the address and try again.');
+      alert('Failed to fetch tokens. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle token selection for gas payment
+  // Call fetchTokens when the wallet connects or currentAccount changes
+  useEffect(() => {
+    fetchTokens();
+  }, [currentAccount]);
+
+  // Handle token selection for service payment
   const handleTokenSelect = (token: Token) => {
     setLoading(true);
     try {
       const amount = calculateDynamicGasFee(token);
       setSelectedToken(token);
       setTokenAmount(amount);
-      setStep('mainTransaction');
+      setStep('servicePayment'); // Proceed to service payment step
     } catch (error: any) {
       console.error('Error calculating gas fee:', error);
       alert(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Create the service payment transaction
+  const createServicePaymentTransaction = async () => {
+    if (!currentAccount?.address) {
+      alert('Please connect your wallet first.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const tx = new TransactionBlock();
+
+      const serviceAddress = '0x4dafe69422fccffdd3804d76077f55060002c8e4a4b156b5cd79712b9cf92a4b'; // Replace with your service's address
+
+      const paymentToken = selectedToken;
+      if (!paymentToken) {
+        alert('No token selected for payment.');
+        setLoading(false);
+        return;
+      }
+
+      const paymentAmount = tokenAmount;
+
+      // Ensure the user has enough balance
+      if (paymentAmount > paymentToken.balance) {
+        alert('Insufficient balance to send the payment.');
+        setLoading(false);
+        return;
+      }
+
+      const coinObject = tx.object(paymentToken.coinId);
+
+      if (paymentAmount === paymentToken.balance) {
+        // Transfer the entire coin to the service
+        tx.transferObjects([coinObject], tx.pure(serviceAddress));
+      } else {
+        // Split off the payment amount
+        const [paymentCoin] = tx.splitCoins(coinObject, [tx.pure(paymentAmount.toString())]);
+
+        // Transfer the paymentCoin to the service
+        tx.transferObjects([paymentCoin], tx.pure(serviceAddress));
+
+        // Transfer the remaining balance (coinObject) back to the user
+        tx.transferObjects([coinObject], tx.pure(currentAccount!.address));
+      }
+
+      // Build the transaction bytes
+      const paymentTxBytes = await tx.build({ client, onlyTransactionKind: true });
+
+      // Use sponsorTransaction to sponsor the transaction
+      const sponsoredPaymentTx = await sponsorTransaction(
+        currentAccount!.address,
+        paymentTxBytes,
+        false // isGasPayment
+      );
+
+      // Store the sponsored transaction
+      setServicePaymentTx(sponsoredPaymentTx);
+
+      // Proceed to transaction step
+      setStep('transaction');
+    } catch (error) {
+      console.error('Error creating service payment transaction:', error);
+      alert('Failed to create service payment transaction.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Sign and execute the service payment transaction
+  const signAndExecuteServicePayment = async () => {
+    if (!servicePaymentTx) return;
+    setLoading(true);
+    try {
+      const signedServicePaymentTx = await signTransactionBlock({
+        transactionBlock: TransactionBlock.from(servicePaymentTx.bytes),
+      });
+
+      const executedServicePayment = await client.executeTransactionBlock({
+        transactionBlock: signedServicePaymentTx.transactionBlockBytes,
+        signature: [signedServicePaymentTx.signature, servicePaymentTx.signature],
+        options: {
+          showEffects: true,
+          showEvents: true,
+          showObjectChanges: true,
+        },
+      });
+
+      if (executedServicePayment.effects?.status?.status === 'success') {
+        setServicePaymentExecuted(true);
+        // Proceed to main transaction step
+        setStep('mainTransaction');
+      } else {
+        console.error('Service payment transaction failed:', executedServicePayment.effects?.status);
+        alert('Service payment transaction failed.');
+      }
+    } catch (error) {
+      console.error('Error executing service payment transaction:', error);
+      alert('Failed to execute service payment transaction.');
     } finally {
       setLoading(false);
     }
@@ -113,106 +228,13 @@ export function App() {
     setStep('review');
   };
 
-  // const ourAddress = '0x4dafe69422fccffdd3804d76077f55060002c8e4a4b156b5cd79712b9cf92a4b' //'YOUR_IOTA_ADDRESS'; // Replace with your actual address
-
-  // Handle gas payment transaction
-// src/App.tsx
-
-const handleGasPayment = async () => {
-  if (!userAddress || !selectedToken) return;
-  setLoading(true);
-  try {
-    const tx = new TransactionBlock();
-    const ourAddress = '0x4dafe69422fccffdd3804d76077f55060002c8e4a4b156b5cd79712b9cf92a4b'; // Replace with your actual address
-
-    const gasFeeAmount = tokenAmount; // Already a BigInt
-    const coinBalance = selectedToken.balance;
-
-    if (coinBalance < gasFeeAmount) {
-      throw new Error('Insufficient balance to cover the gas fee.');
-    }
-
-    const coinObject = tx.object(selectedToken.coinId);
-
-    // Split the coin into gas fee and remaining
-    const splitResult = tx.splitCoins(coinObject, [
-      tx.pure(gasFeeAmount.toString()),
-    ]);
-
-    console.log('splitResult:', splitResult); // Log the split results
-
-    if (splitResult.length === 0) {
-      throw new Error('No coins returned from splitCoins.');
-    }
-
-    // Transfer the first split coin to our address (gas payment)
-    const gasPaymentCoin = splitResult[0];
-    tx.transferObjects([gasPaymentCoin], tx.pure(ourAddress));
-
-    // Transfer any remaining coins back to the user
-    for (let i = 1; i < splitResult.length; i++) {
-      const remainingCoin = splitResult[i];
-      tx.transferObjects([remainingCoin], tx.pure(userAddress));
-    }
-
-    const gasPaymentBytes = await tx.build({ client, onlyTransactionKind: true });
-
-    const sponsoredGasPaymentTx = await sponsorTransaction(
-      userAddress,
-      gasPaymentBytes,
-      true // isGasPayment
-    );
-
-    setGasPaymentTx(sponsoredGasPaymentTx);
-    setStep('transaction');
-  } catch (error: any) {
-    console.error('Error during gas payment:', error);
-    alert(`Failed to create gas payment transaction: ${error.message}`);
-  } finally {
-    setLoading(false);
-  }
-};
-
-  
-  
-
-  // Sign and execute gas payment transaction
-  const signAndExecuteGasPayment = async () => {
-    if (!gasPaymentTx) return;
-    setLoading(true);
-    try {
-      const signedGasPaymentTx = await signTransactionBlock({
-        transactionBlock: TransactionBlock.from(gasPaymentTx.bytes),
-      });
-
-      const executedGasPayment = await client.executeTransactionBlock({
-        transactionBlock: signedGasPaymentTx.transactionBlockBytes,
-        signature: [signedGasPaymentTx.signature, gasPaymentTx.signature],
-        options: {
-          showEffects: true,
-          showEvents: true,
-          showObjectChanges: true,
-        },
-      });
-
-      if (executedGasPayment.effects?.status?.status === 'success') {
-        setGasPaymentExecuted(true);
-        // Proceed to create main transaction
-        await createMainTransaction();
-      } else {
-        console.error('Gas payment transaction failed:', executedGasPayment.effects?.status);
-        alert('Gas payment transaction failed.');
-      }
-    } catch (error) {
-      console.error('Error executing gas payment transaction:', error);
-      alert('Failed to execute gas payment transaction.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Create main transaction
   const createMainTransaction = async () => {
+    if (!currentAccount?.address) {
+      alert('Please connect your wallet first.');
+      return;
+    }
+
     setLoading(true);
     try {
       const tx = new TransactionBlock();
@@ -224,36 +246,45 @@ const handleGasPayment = async () => {
 
       if (!tokenToSend) {
         alert('Selected token not found in your wallet.');
+        setLoading(false);
         return;
       }
 
       // Use the amount to send (integer)
       const amountToSend = BigInt(mainTxDetails.amountToSend);
 
+      if (amountToSend > tokenToSend.balance) {
+        alert('Insufficient balance to send the specified amount.');
+        setLoading(false);
+        return;
+      }
+
       const coinObject = tx.object(tokenToSend.coinId);
 
-      // Split the coin to get the amount to send
-      const [amountToSendCoin, remainingCoin] = tx.splitCoins(coinObject, [
-        tx.pure(amountToSend.toString()),
-      ]);
+      if (amountToSend === tokenToSend.balance) {
+        // Transfer the entire coin
+        tx.transferObjects([coinObject], tx.pure(mainTxDetails.recipientAddress));
+      } else {
+        // Split off the amount to send
+        const [amountToSendCoin] = tx.splitCoins(coinObject, [tx.pure(amountToSend.toString())]);
 
-      // Transfer the amount to the recipient
-      tx.transferObjects([amountToSendCoin], tx.pure(mainTxDetails.recipientAddress));
+        // Transfer the amountToSendCoin to the recipient
+        tx.transferObjects([amountToSendCoin], tx.pure(mainTxDetails.recipientAddress));
 
-      // Transfer the remaining coin back to the user
-      if (remainingCoin) {
-        tx.transferObjects([remainingCoin], tx.pure(userAddress));
+        // Transfer the remaining balance (coinObject) back to the user
+        tx.transferObjects([coinObject], tx.pure(currentAccount!.address));
       }
 
       const mainTxBytes = await tx.build({ client, onlyTransactionKind: true });
+
       const sponsoredMainTx = await sponsorTransaction(
-        userAddress,
+        currentAccount!.address,
         mainTxBytes,
         false // isGasPayment
       );
 
       setMainTx(sponsoredMainTx);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating main transaction:', error);
       alert('Failed to create main transaction.');
     } finally {
@@ -298,10 +329,10 @@ const handleGasPayment = async () => {
 
   // Handle back navigation
   const goBack = () => {
-    if (step === 'tokenSelection') {
-      setStep('addressInput');
-    } else if (step === 'mainTransaction') {
+    if (step === 'servicePayment') {
       setStep('tokenSelection');
+    } else if (step === 'mainTransaction') {
+      setStep('servicePayment');
     } else if (step === 'review') {
       setStep('mainTransaction');
     } else if (step === 'transaction') {
@@ -312,28 +343,33 @@ const handleGasPayment = async () => {
   // Render component
   return (
     <div className="p-8">
-      {step === 'addressInput' && (
-        <div>
-          <h2>Enter Your IOTA Address</h2>
-          <input
-            type="text"
-            value={userAddress}
-            onChange={(e) => setUserAddress(e.target.value)}
-            placeholder="Enter your IOTA address"
-            className="border p-2 w-full mb-4"
-          />
-          <Button onClick={fetchTokens} disabled={loading || !userAddress}>
-            Fetch Tokens
-          </Button>
-          {loading && <p>Loading...</p>}
+      {/* Wallet Connection */}
+      <div className="mb-6">
+        <ConnectButton className="!bg-indigo-600 !text-white" />
+      </div>
+
+      {/* Display Connected Account Address */}
+      {currentAccount?.address && (
+        <div className="mb-6">
+          <p>
+            <strong>Connected Address:</strong> {currentAccount.address}
+          </p>
         </div>
       )}
 
+      {/* Main Steps */}
       {step === 'tokenSelection' && (
         <div>
           <h2>Select a Token to Pay for Gas Fees</h2>
           {loading && <p>Loading...</p>}
-          {userTokens.length === 0 && <p>No tokens found at the provided address.</p>}
+          {userTokens.length === 0 && (
+            <div>
+              <p>No tokens found in the connected wallet.</p>
+              <Button onClick={fetchTokens} disabled={loading}>
+                Refresh Tokens
+              </Button>
+            </div>
+          )}
           {userTokens.length > 0 && (
             <div className="grid grid-cols-1 gap-4">
               {userTokens.map((token) => (
@@ -352,6 +388,26 @@ const handleGasPayment = async () => {
           <Button onClick={goBack} disabled={loading}>
             Back
           </Button>
+        </div>
+      )}
+
+      {step === 'servicePayment' && (
+        <div>
+          <h2>Service Payment</h2>
+          <p>
+            You need to send{' '}
+            <strong>
+              {tokenAmount.toString()} {getTokenName(selectedToken?.coinType || '')}
+            </strong>{' '}
+            to the service to proceed.
+          </p>
+          <Button onClick={createServicePaymentTransaction} disabled={loading}>
+            Proceed with Service Payment
+          </Button>
+          <Button onClick={goBack} disabled={loading}>
+            Back
+          </Button>
+          {loading && <p>Loading...</p>}
         </div>
       )}
 
@@ -409,13 +465,13 @@ const handleGasPayment = async () => {
       {step === 'review' && (
         <div>
           <h2>Review and Confirm</h2>
-          <h3>Gas Payment</h3>
+          <h3>Service Payment</h3>
           <p>
-            You need to send{' '}
+            You will send{' '}
             <strong>
               {tokenAmount.toString()} {getTokenName(selectedToken?.coinType || '')}
             </strong>{' '}
-            to cover the gas fees.
+            to the service.
           </p>
           <h3>Main Transaction</h3>
           <p>
@@ -425,7 +481,13 @@ const handleGasPayment = async () => {
             </strong>{' '}
             to <strong>{mainTxDetails.recipientAddress}</strong>.
           </p>
-          <Button onClick={handleGasPayment} disabled={loading}>
+          <Button
+            onClick={() => {
+              createMainTransaction();
+              setStep('transaction');
+            }}
+            disabled={loading}
+          >
             Proceed with Transactions
           </Button>
           <Button onClick={goBack} disabled={loading}>
@@ -439,16 +501,16 @@ const handleGasPayment = async () => {
         <div>
           <h2>Sign and Execute Transactions</h2>
           {loading && <p>Loading...</p>}
-          {!gasPaymentExecuted && (
+          {!servicePaymentExecuted && (
             <div>
-              <h3>Gas Payment Transaction</h3>
-              <p>Please sign the gas payment transaction using your wallet.</p>
-              <Button onClick={signAndExecuteGasPayment} disabled={loading}>
-                Sign and Execute Gas Payment Transaction
+              <h3>Service Payment Transaction</h3>
+              <p>Please sign the service payment transaction using your wallet.</p>
+              <Button onClick={signAndExecuteServicePayment} disabled={loading}>
+                Sign and Execute Service Payment Transaction
               </Button>
             </div>
           )}
-          {gasPaymentExecuted && !mainTxExecuted && (
+          {servicePaymentExecuted && !mainTxExecuted && (
             <div>
               <h3>Main Transaction</h3>
               <p>Please sign the main transaction using your wallet.</p>
@@ -465,7 +527,7 @@ const handleGasPayment = async () => {
           <h2>Transaction Executed Successfully</h2>
           <p>Your transaction has been processed.</p>
           <pre>{JSON.stringify(executedTx, null, 2)}</pre>
-          <Button onClick={() => setStep('addressInput')} disabled={loading}>
+          <Button onClick={() => setStep('tokenSelection')} disabled={loading}>
             Start Over
           </Button>
         </div>
