@@ -1,0 +1,14 @@
+[package]
+name = "iotapad"
+edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
+license = "MIT"          
+authors = ["Elvis KONJOH(elvis.konjoh@yahoo.com)"] 
+
+[dependencies]
+Iota = { local = "/home/elvis/iota/crates/iota-framework/packages/iota-framework"}
+#Local = { local = "/home/elvis/iota/hackaton2024/iotapad" }
+
+[addresses]
+iotapad = "0x0"
+iota =  "0000000000000000000000000000000000000000000000000000000000000002"
+
