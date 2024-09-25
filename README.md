@@ -1,6 +1,10 @@
 # IOTA Bridge
 
-The IOTA Bridge is a protocol that facilitates the transfer of assets between IOTA and Ethereum blockchains.
+The IOTA Bridge is a project that aims at facilitating the transfer of assets between the IOTA and Ethereum blockchains.
+
+IOTA Bridge works as a multi-chain Token Transfer Bridge based on Move and Solidity. It allows users to lock tokens on one blockchain to obtain a corresponding amount of wrapped tokens on the other blockchain, and, vice-versa, to burn wrapped tokens on one blockchain to unlock previously locked tokens on the other blockchain.
+
+Users only have to interact with two Bridge smart contracts, one written in Move (for the IOTA blockchain) and one written in Solidity (for the Ethereum blockchain). The lock-mint and the burn-unlock processes are automatically managed by a server (which shall be managed by a trusted third-party organization, e.g. the IOTA Foundation). A decentralized version of IOTA Bridge (based, for example, on ChainLink or LayerZero) is a possible future direction of the project.
 
 1. [Achievements](#achievements)
 1. [Structure](#structure)
