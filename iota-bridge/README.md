@@ -9,7 +9,7 @@ The IOTA Bridge is a protocol that facilitates the transfer of assets between IO
 ## Achievements
 
 - Developed bridge implementations in both Solidity and Move :white_check_mark:
-- Created unit tests for Solidity and Move :white_check_mark:
+- Created comprehensive tests for Solidity and Move :white_check_mark:
 - Formally verified Solidity properties using Certora :white_check_mark:
 - Implemented the server :white_check_mark:
 
