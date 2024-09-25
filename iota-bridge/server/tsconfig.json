@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+      "resolveJsonModule": true,
+      "esModuleInterop": true,
+      "module": "commonjs", // This should be set depending on your project, but usually, it's commonjs for Node.js
+      "target": "es6",
+      // Other options...
+    }
+  }
+  
