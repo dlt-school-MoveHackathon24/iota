@@ -9,7 +9,7 @@ import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
 
 
 const COMPLETE_URI = "pluto.ef.unimi.iota";
-//const MNEMONIC = "drop erupt possible insect despair ski grief twice firm diagram smooth fancy";
+const MNEMONIC = "drop erupt possible insect despair ski grief twice firm diagram smooth fancy";
 
 async function sleep(ms: number): Promise<void> {
     return new Promise(
@@ -20,9 +20,9 @@ async function getAddress (URI:string) {
     console.log(">> SETTING UP ACCOUNT");
 
     console.info(">>>> CREATING KEYPAIR");
-    //const mnemonic = MNEMONIC
-    //const signer = Ed25519Keypair.deriveKeypair(mnemonic);
-    const signer = new Ed25519Keypair();
+    const mnemonic = MNEMONIC
+    const signer = Ed25519Keypair.deriveKeypair(mnemonic);
+    //const signer = new Ed25519Keypair();
     console.info(">>>> ADDRESS : " + signer.toIotaAddress());
 
     console.info(">> SETTING UP CLIENT : ");
