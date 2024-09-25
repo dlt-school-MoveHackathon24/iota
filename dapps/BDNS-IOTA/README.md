@@ -23,7 +23,7 @@ This project was created by:
 
 ## 📝 Description <a name="description"/>
 
-The **IOTA-ID DNS Module** is a pioneering solution for decentralized domain name management on the IOTA blockchain, functioning as a Blockchain Domain Name System (BDNS). Unlike traditional DNS systems, which are centralized and prone to various vulnerabilities, our BDNS leverages the tree-like data structure of the IOTA blockchain to create a secure, transparent, and censorship-resistant environment for managing domains and subdomains.
+The **IOTA-ID DNS Module** is a solution for decentralized domain name management on the IOTA blockchain, functioning as a Blockchain Domain Name System (BDNS). Unlike traditional DNS systems, which are centralized and prone to various vulnerabilities, our BDNS leverages the tree-like data structure of the IOTA blockchain to create a secure, transparent, and censorship-resistant environment for managing domains and subdomains.
 
 ### Key Features and Functionality
 
@@ -43,6 +43,10 @@ Our module empowers individuals and organizations to manage their digital identi
 
 The **IOTA-ID DNS Module** operates through a structured and logical approach that revolves around the concept of a "Node." Understanding the structure of a Node is essential to grasp how the module functions and how you can utilize it to manage domains and subdomains effectively.
 
+For this project we published an example tree which represents a set of URIs for different organizations, in this case different universities. Each univerity encompasses different deparments and, finally, every department encompasses employers addresses as follows:
+
+![example tree](./example_tree.jpg)
+
 ### The Node Structure
 
 A Node represents the fundamental unit within the tree-like hierarchy of the IOTA-ID DNS system. Each Node corresponds to a domain or subdomain and is defined by three primary attributes:
@@ -59,33 +63,74 @@ The module is composed of four main functions that enable the creation, manageme
 
 1. **➕ add_subdomain**:
    - **Inputs**: 
-     - A parent Node.
-     - The name of the new subdomain.
+     - The root Node.
+     - The vector of subdomains bringing to the **parent** Node.
+     - The name of the new **child** Node
      - The address of the subdomain's new owner.
-   - **Description**: This function is used to create a new subdomain under a specified parent Node. The function generates a new Node for the subdomain, assigns it a name and owner, and marks it as a shared object, meaning it is visible and modifiable within the IOTA network. The subdomain's ID is then added to the parent Node using Dynamic Fields, establishing the hierarchical relationship between the domain and its subdomain.
+   - **Description**: This function is used to create a new subdomain under a specified parent Node. The function generates a new Node for the subdomain, assigns it a name and owner, and marks it as a shared object, meaning it is visible and modifiable within the IOTA network. The subdomain's Node is then added to the parent Node using Dynamic Fields, establishing the hierarchical relationship between the domain and its subdomain.
 
 2. **🗑️ remove_subdomain**:
    - **Inputs**: 
-     - A parent Node.
+     - The root Node.
+     - The vector of subdomains bringing to the **parent** Node.
      - The name of the subdomain to be removed.
-   - **Description**: This function allows the owner of a Node to remove an existing subdomain. By providing the name of the subdomain and the parent Node, the function uses Dynamic Fields to remove the subdomain's reference from the parent Node, effectively removing it from the hierarchical structure.
+   - **Description**: This function allows the owner of a Node to remove an existing subdomain. By providing the name of the subdomain and the parent Node, the function uses Dynamic Fields to remove the subdomain's Node from the parent Node, effectively removing it from the hierarchical structure.
 
-3. **👤 get_owner**:
-   - **Inputs**: 
-     - A Node.
-   - **Outputs**: The owner's address is transferred to the sender.
-   - **Description**: This function retrieves the owner of a specified Node and transfers their address to the sender. It is a straightforward way to identify and verify the ownership of any domain or subdomain within the system.
+3. **🪢 get_node**:
+   - **Inputs**:
+     - The root Node. 
+     - The vector of subdomains bringing to a Node.
+   - **Outputs**: a Node object.
+   - **Description**: This function retrieves the Node object following a specified Uri and returns it, thid function is mainly internally used.
 
 4. **🔍 get_address**:
    - **Inputs**: 
-     - A Node.
-     - The name of a subdomain.
-   - **Outputs**: The ID of the specified subdomain.
-   - **Description**: This function allows users to obtain the ID of a subdomain under a given Node. By providing the parent Node and the subdomain's name, the function retrieves the subdomain's unique ID, enabling further actions or verifications within the decentralized DNS system.
+     - The root Node.
+     - The vector of subdomains bringing to a Node.
+   - **Description**: This function allows users to obtain the owner address of a subdomain under a given Node. By providing the root Node and the subdomains vector, the function retrieves the subdomain's owner, creates an Address object and sends it to the **sender**.
 
 ---
 
 ## ⚙️ Setup <a name="setup"/>
 
+Setting up the **IOTA-ID BDNS Module** involves preparing your development environment, installing necessary dependencies, and configuring the module for use. Follow the steps below to get started.
 
----
+### 📋 Prerequisites
+
+Ensure you have the following installed on your system:
+
+- **Node.js** (v20 or higher)
+
+### 📝 Setup Instructions
+
+Execute the following commands in your terminal:
+
+```bash
+
+# Clone the repository
+
+# Navigate to the iota directory root
+cd iota
+
+# Install all dependencies
+pnpm install
+
+# Build the IOTA SDK
+pnpm sdk build
+
+# Navigate to the client-js directory
+cd dapps/ID-IOTA/client-js
+
+# Install all client-side dependencies
+pnpm install
+
+# Link the local IOTA SDK TypeScript package to the client application
+pnpm link ../../../sdk/typescript/
+
+# Inside the file main.ts, you shall edit COMPLETE_URI with the URI corresponding to the address you want to retrieve (g.e. "pippo.CS.unipg.iota"), and MNEMONIC with the mnemonic of the account you want to perform the transaction with.
+
+# Run the client application
+pnpm run exec
+
+```
+

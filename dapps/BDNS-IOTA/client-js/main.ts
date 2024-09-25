@@ -1,6 +1,6 @@
 import { IotaClient, IotaTransactionBlockResponse} from '@iota/iota-sdk/client';
 import { requestIotaFromFaucetV1 } from '@iota/iota-sdk/faucet';
-import { Inputs, TransactionBlock, TransactionObjectArgument, TransactionResult } from '@iota/iota-sdk/transactions';
+import { TransactionBlock,TransactionResult } from '@iota/iota-sdk/transactions';
 import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
 
 
@@ -8,8 +8,8 @@ import { Ed25519Keypair } from '@iota/iota-sdk/keypairs/ed25519';
 //node --no-warnings --loader ts-node/esm main.ts
 
 
-const COMPLETE_URI = "angelo.CS.unipg.iota";
-const MNEMONIC = "drop erupt possible insect despair ski grief twice firm diagram smooth fancy";
+const COMPLETE_URI = "pluto.ef.unimi.iota";
+//const MNEMONIC = "drop erupt possible insect despair ski grief twice firm diagram smooth fancy";
 
 async function sleep(ms: number): Promise<void> {
     return new Promise(
@@ -20,7 +20,7 @@ async function getAddress (URI:string) {
     console.log(">> SETTING UP ACCOUNT");
 
     console.info(">>>> CREATING KEYPAIR");
-    const mnemonic = MNEMONIC
+    //const mnemonic = MNEMONIC
     //const signer = Ed25519Keypair.deriveKeypair(mnemonic);
     const signer = new Ed25519Keypair();
     console.info(">>>> ADDRESS : " + signer.toIotaAddress());
@@ -43,7 +43,7 @@ async function getAddress (URI:string) {
     console.info(">> CREATING TRANSACTION BLOCK");
     const txb : TransactionBlock = new TransactionBlock();
 
-    const packageId : string = '0x4b8263686e699ced60293a4e7d3c9477b3f12777e0714d966e05404c666a23e5';
+    const packageId : string = '0x1338594d01b01cfef4d722dab20dd3f79400fd8c094185833acccef7f44ab57c';
 
 
     console.info(">> SPLITTING URI");
@@ -57,7 +57,7 @@ async function getAddress (URI:string) {
     });
     
 
-    let root_id = txb.object('0xed41679eda4c1406f9f7fe2b3c873969fd6589f47c1411a87c7694d5b7a58459');
+    let root_id = txb.object('0xd5d6ca514b67e9f83de2e3b410017d2e28c1756822534a268d041bb45776720c');
     console.info(">> CREATING VECTOR");
     const uriVector : TransactionResult = txb.makeMoveVec({type: "0x1::string::String", objects: URIobjects});
     
