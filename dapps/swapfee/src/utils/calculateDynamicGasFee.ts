@@ -34,6 +34,7 @@ function getMockExchangeRate(coinType: string): { rateInIota: number; rateInToke
     '0x1::mint_coin::MintCoin': { rateInIota: 1, rateInToken: 5 },  // 1 IOTA = 5 Mint Coin
     '0x1::horse::HORSE': { rateInIota: 1, rateInToken: 10 }, // 1 IOTA = 10 Horse Tokens
     '0xc7edfd192a618b68897a0e0cf330e600027dd2bbc0f1be4c63685349da059b05::airdrop::AIRDROP' : { rateInIota: 1, rateInToken: 1 }, // 1 IOTA = 20 Airdrop Tokens
+    '0x8e86df869286d8b181b7115cbfb94a2ef84d9a5fedab15495b2cb23adc1fddb6::mintcoin::MINTCOIN': { rateInIota: 1, rateInToken: 1 }, // 1 IOTA = 1 Mint Coin
     // Add other tokens as needed
   };
 

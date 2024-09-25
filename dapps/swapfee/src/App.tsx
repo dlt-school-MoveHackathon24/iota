@@ -56,6 +56,7 @@ export function App() {
     '0x1::ctf_b::CTFB': 'CTF B Coin',
     '0x1::mint_coin::MintCoin': 'Mint Coin',
     '0x1::horse::HORSE': 'Horse Tokens',
+    '0x8e86df869286d8b181b7115cbfb94a2ef84d9a5fedab15495b2cb23adc1fddb6::mintcoin::MINTCOIN': 'Mint Coin - CUSTOM TOKEN',
     // Add other mappings as needed
   };
 
@@ -105,6 +106,26 @@ export function App() {
     }
   };
 
+  // Get current step number for progress indicator
+  const getStepNumber = (currentStep: string): number => {
+    switch (currentStep) {
+      case 'tokenSelection':
+        return 1;
+      case 'servicePayment':
+        return 2;
+      case 'mainTransaction':
+        return 3;
+      case 'review':
+        return 4;
+      case 'transaction':
+        return 5;
+      case 'completed':
+        return 6;
+      default:
+        return 1;
+    }
+  };
+
   // Create the service payment transaction
   const createServicePaymentTransaction = async () => {
     if (!currentAccount?.address) {
@@ -116,8 +137,7 @@ export function App() {
     try {
       const tx = new TransactionBlock();
 
-      const serviceAddress = '0x4dafe69422fccffdd3804d76077f55060002c8e4a4b156b5cd79712b9cf92a4b'; // Replace with your service's address
-
+      const serviceAddress = '0x4dafe69422fccffdd3804d76077f55060002c8e4a4b156b5cd79712b9cf92a4b'; // Replace with your service's address, where the servise will recive the custom token as payment of his service
       const paymentToken = selectedToken;
       if (!paymentToken) {
         alert('No token selected for payment.');
@@ -194,6 +214,10 @@ export function App() {
 
       if (executedServicePayment.effects?.status?.status === 'success') {
         setServicePaymentExecuted(true);
+
+        // Refetch tokens to update balances
+        await fetchTokens();
+
         // Proceed to main transaction step
         setStep('mainTransaction');
       } else {
@@ -225,6 +249,24 @@ export function App() {
       return;
     }
 
+    // Get the selected token's balance
+    const tokenBalance = mainTxDetails.tokenToSend.balance;
+
+    // Amount to send as BigInt
+    const amountToSend = BigInt(mainTxDetails.amountToSend);
+
+    // Prevent sending the entire balance (assuming fees need to be paid)
+    if (amountToSend >= tokenBalance) {
+      alert('Cannot send the entire balance due to transaction fees. Please enter a smaller amount.');
+      return;
+    }
+
+    // Ensure amountToSend <= tokenBalance
+    if (amountToSend > tokenBalance) {
+      alert('Insufficient balance to send the specified amount.');
+      return;
+    }
+
     setStep('review');
   };
 
@@ -252,6 +294,13 @@ export function App() {
 
       // Use the amount to send (integer)
       const amountToSend = BigInt(mainTxDetails.amountToSend);
+
+      // Prevent sending the entire balance (assuming fees need to be paid)
+      if (amountToSend >= tokenToSend.balance) {
+        alert('Cannot send the entire balance due to transaction fees. Please enter a smaller amount.');
+        setLoading(false);
+        return;
+      }
 
       if (amountToSend > tokenToSend.balance) {
         alert('Insufficient balance to send the specified amount.');
@@ -314,6 +363,10 @@ export function App() {
       if (executedMainTx.effects?.status?.status === 'success') {
         setMainTxExecuted(true);
         setExecutedTx(executedMainTx);
+
+        // Refetch tokens to update balances
+        await fetchTokens();
+
         setStep('completed');
       } else {
         console.error('Main transaction failed:', executedMainTx.effects?.status);
@@ -330,6 +383,8 @@ export function App() {
   // Handle back navigation
   const goBack = () => {
     if (step === 'servicePayment') {
+      setSelectedToken(null);
+      setTokenAmount(BigInt(0));
       setStep('tokenSelection');
     } else if (step === 'mainTransaction') {
       setStep('servicePayment');
@@ -342,7 +397,7 @@ export function App() {
 
   // Render component
   return (
-    <div className="p-8">
+    <div className="p-8 max-w-3xl mx-auto">
       {/* Wallet Connection */}
       <div className="mb-6">
         <ConnectButton className="!bg-indigo-600 !text-white" />
@@ -357,10 +412,21 @@ export function App() {
         </div>
       )}
 
+      {/* Progress Indicator */}
+      <div className="mb-6">
+        <p className="text-gray-700">Step {getStepNumber(step)} of 6</p>
+        <div className="w-full bg-gray-200 h-2 rounded">
+          <div
+            className={`bg-indigo-600 h-2 rounded`}
+            style={{ width: `${(getStepNumber(step) / 6) * 100}%` }}
+          ></div>
+        </div>
+      </div>
+
       {/* Main Steps */}
       {step === 'tokenSelection' && (
         <div>
-          <h2>Select a Token to Pay for Gas Fees</h2>
+          <h2 className="text-2xl font-bold mb-4">Select a Token to Pay for Gas Fees</h2>
           {loading && <p>Loading...</p>}
           {userTokens.length === 0 && (
             <div>
@@ -370,41 +436,42 @@ export function App() {
               </Button>
             </div>
           )}
-          {userTokens.length > 0 && (
-            <div className="grid grid-cols-1 gap-4">
-              {userTokens.map((token) => (
-                <div key={token.coinId} className="border p-4 rounded-lg shadow-md">
-                  <p className="font-semibold text-lg">{getTokenName(token.coinType)}</p>
-                  <p className="text-sm text-gray-600">Coin Type: {token.coinType}</p>
-                  <p className="text-sm text-gray-600">Coin ID: {token.coinId}</p>
-                  <p className="text-sm text-gray-600">Balance: {token.balance.toString()}</p>
-                  <Button onClick={() => handleTokenSelect(token)} disabled={loading}>
-                    Select for Gas Payment
-                  </Button>
-                </div>
-              ))}
+          {userTokens.filter(token => token.balance > BigInt(0)).length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {userTokens
+                .filter(token => token.balance > BigInt(0))
+                .map((token) => (
+                  <div key={token.coinId} className="border p-4 rounded-lg shadow-md">
+                    <p className="font-semibold text-lg">{getTokenName(token.coinType)}</p>
+                    <p className="text-sm text-gray-600">Coin Type: {token.coinType}</p>
+                    <p className="text-sm text-gray-600">Coin ID: {token.coinId}</p>
+                    <p className="text-sm text-gray-600">Balance: {token.balance.toString()}</p>
+                    <Button onClick={() => handleTokenSelect(token)} disabled={loading}>
+                      Select for Gas Payment
+                    </Button>
+                  </div>
+                ))}
             </div>
+          ) : (
+            <p>No tokens with balance available.</p>
           )}
-          <Button onClick={goBack} disabled={loading}>
-            Back
-          </Button>
         </div>
       )}
 
       {step === 'servicePayment' && (
         <div>
-          <h2>Service Payment</h2>
-          <p>
+          <h2 className="text-2xl font-bold mb-4">Service Payment</h2>
+          <p className="mb-4">
             You need to send{' '}
             <strong>
               {tokenAmount.toString()} {getTokenName(selectedToken?.coinType || '')}
             </strong>{' '}
             to the service to proceed.
           </p>
-          <Button onClick={createServicePaymentTransaction} disabled={loading}>
+          <Button onClick={createServicePaymentTransaction} disabled={loading} className="mr-2">
             Proceed with Service Payment
           </Button>
-          <Button onClick={goBack} disabled={loading}>
+          <Button onClick={goBack} disabled={loading} className="ml-2">
             Back
           </Button>
           {loading && <p>Loading...</p>}
@@ -413,25 +480,27 @@ export function App() {
 
       {step === 'mainTransaction' && (
         <div>
-          <h2>Specify Main Transaction</h2>
-          <label className="block mb-2">Select Token to Send:</label>
+          <h2 className="text-2xl font-bold mb-4">Specify Main Transaction</h2>
+          <label className="block mb-2 font-medium">Select Token to Send:</label>
           <select
             value={mainTxDetails.tokenToSend?.coinId || ''}
             onChange={(e) => {
               const token = userTokens.find((t) => t.coinId === e.target.value);
               setMainTxDetails({ ...mainTxDetails, tokenToSend: token || null });
             }}
-            className="border p-2 w-full mb-4"
+            className="border p-2 w-full mb-4 rounded"
           >
             <option value="">Select a token</option>
-            {userTokens.map((token) => (
-              <option key={token.coinId} value={token.coinId}>
-                {getTokenName(token.coinType)} ({token.balance.toString()})
-              </option>
-            ))}
+            {userTokens
+              .filter(token => token.balance > BigInt(0))
+              .map((token) => (
+                <option key={token.coinId} value={token.coinId}>
+                  {getTokenName(token.coinType)} ({token.balance.toString()})
+                </option>
+              ))}
           </select>
 
-          <label className="block mb-2">Recipient Address:</label>
+          <label className="block mb-2 font-medium">Recipient Address:</label>
           <input
             type="text"
             value={mainTxDetails.recipientAddress}
@@ -439,10 +508,10 @@ export function App() {
               setMainTxDetails({ ...mainTxDetails, recipientAddress: e.target.value })
             }
             placeholder="Enter recipient's IOTA address"
-            className="border p-2 w-full mb-4"
+            className="border p-2 w-full mb-4 rounded"
           />
 
-          <label className="block mb-2">Amount to Send:</label>
+          <label className="block mb-2 font-medium">Amount to Send:</label>
           <input
             type="text"
             value={mainTxDetails.amountToSend}
@@ -450,13 +519,13 @@ export function App() {
               setMainTxDetails({ ...mainTxDetails, amountToSend: e.target.value })
             }
             placeholder="Enter amount (integer)"
-            className="border p-2 w-full mb-4"
+            className="border p-2 w-full mb-4 rounded"
           />
 
-          <Button onClick={handleMainTxDetailsSubmit} disabled={loading}>
+          <Button onClick={handleMainTxDetailsSubmit} disabled={loading} className="mr-2">
             Continue
           </Button>
-          <Button onClick={goBack} disabled={loading}>
+          <Button onClick={goBack} disabled={loading} className="ml-2">
             Back
           </Button>
         </div>
@@ -464,17 +533,17 @@ export function App() {
 
       {step === 'review' && (
         <div>
-          <h2>Review and Confirm</h2>
-          <h3>Service Payment</h3>
-          <p>
+          <h2 className="text-2xl font-bold mb-4">Review and Confirm</h2>
+          <h3 className="text-xl font-semibold mb-2">Service Payment</h3>
+          <p className="mb-4">
             You will send{' '}
             <strong>
               {tokenAmount.toString()} {getTokenName(selectedToken?.coinType || '')}
             </strong>{' '}
             to the service.
           </p>
-          <h3>Main Transaction</h3>
-          <p>
+          <h3 className="text-xl font-semibold mb-2">Main Transaction</h3>
+          <p className="mb-4">
             You will send{' '}
             <strong>
               {mainTxDetails.amountToSend} {getTokenName(mainTxDetails.tokenToSend?.coinType || '')}
@@ -487,10 +556,11 @@ export function App() {
               setStep('transaction');
             }}
             disabled={loading}
+            className="mr-2"
           >
             Proceed with Transactions
           </Button>
-          <Button onClick={goBack} disabled={loading}>
+          <Button onClick={goBack} disabled={loading} className="ml-2">
             Back
           </Button>
           {loading && <p>Loading...</p>}
@@ -499,12 +569,12 @@ export function App() {
 
       {step === 'transaction' && (
         <div>
-          <h2>Sign and Execute Transactions</h2>
+          <h2 className="text-2xl font-bold mb-4">Sign and Execute Transactions</h2>
           {loading && <p>Loading...</p>}
           {!servicePaymentExecuted && (
             <div>
-              <h3>Service Payment Transaction</h3>
-              <p>Please sign the service payment transaction using your wallet.</p>
+              <h3 className="text-xl font-semibold mb-2">Service Payment Transaction</h3>
+              <p className="mb-4">Please sign the service payment transaction using your wallet.</p>
               <Button onClick={signAndExecuteServicePayment} disabled={loading}>
                 Sign and Execute Service Payment Transaction
               </Button>
@@ -512,8 +582,8 @@ export function App() {
           )}
           {servicePaymentExecuted && !mainTxExecuted && (
             <div>
-              <h3>Main Transaction</h3>
-              <p>Please sign the main transaction using your wallet.</p>
+              <h3 className="text-xl font-semibold mb-2">Main Transaction</h3>
+              <p className="mb-4">Please sign the main transaction using your wallet.</p>
               <Button onClick={signAndExecuteMainTransaction} disabled={loading}>
                 Sign and Execute Main Transaction
               </Button>
@@ -524,21 +594,59 @@ export function App() {
 
       {step === 'completed' && (
         <div>
-          <h2>Transaction Executed Successfully</h2>
-          <p>Your transaction has been processed.</p>
-          <pre>{JSON.stringify(executedTx, null, 2)}</pre>
-          <Button onClick={() => setStep('tokenSelection')} disabled={loading}>
-            Start Over
-          </Button>
+          <h2 className="text-2xl font-bold mb-4">Transaction Executed Successfully</h2>
+          <p className="mb-4">Your transaction has been processed.</p>
+          <pre className="bg-gray-100 p-4 rounded overflow-x-auto text-sm">
+            {JSON.stringify(executedTx, null, 2)}
+          </pre>
+          <p className="mt-4">Would you like to perform another action or disconnect?</p>
+          <div className="flex space-x-4 mt-4">
+            <Button
+              onClick={() => {
+                setStep('tokenSelection');
+                setSelectedToken(null);
+                setTokenAmount(BigInt(0));
+                setServicePaymentTx(null);
+                setServicePaymentExecuted(false);
+                setMainTx(null);
+                setMainTxExecuted(false);
+                setExecutedTx(null);
+                setMainTxDetails({
+                  tokenToSend: null,
+                  recipientAddress: '',
+                  amountToSend: '',
+                });
+
+                // Fetch tokens to update balances
+                fetchTokens();
+              }}
+              disabled={loading}
+            >
+              Perform Another Action
+            </Button>
+            <Button
+              onClick={() => {
+                // Since the wallet disconnect function is not available without adding new methods,
+                // you can instruct the user to disconnect via the ConnectButton.
+                alert('To disconnect your wallet, please click the "Connect Wallet" button.');
+              }}
+              disabled={loading}
+            >
+              Disconnect Wallet
+            </Button>
+          </div>
         </div>
       )}
     </div>
   );
 }
 
-const Button = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
+const Button = ({
+  className = '',
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & { className?: string }) => (
   <button
-    className="bg-indigo-600 text-sm font-medium text-white rounded-lg px-4 py-3 disabled:cursor-not-allowed disabled:opacity-60"
+    className={`bg-indigo-600 text-sm font-medium text-white rounded-lg px-4 py-3 disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
     {...props}
   />
 );
