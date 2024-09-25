@@ -86,3 +86,29 @@ lcov.info
 docker/iota-private-network/data
 docker/iota-private-network/configs/validators/validator*
 docker/iota-private-network/configs/genesis/genesis.blob
+
+# Node modules
+node_modules/
+
+# Build artifacts
+artifacts/
+cache/
+
+# Hardhat specific files
+#hardhat.config.js
+#hardhat.config.ts
+.env
+
+# Log files
+*.log
+
+# IDE files
+.vscode/
+.idea/
+.DS_Store
+
+# TypeScript output
+dist/
+
+# Move related
+Move.lock
