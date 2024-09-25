@@ -1,3 +1,11 @@
+/**
+ * @file whitelistedCoinTypes.ts
+ * @summary Whitelisted coin types for the DLT.
+ * @author
+ *   - Developer: Silvio Meneguzzo
+ * @date September 20, 2024
+ */
+
 export const whitelistedCoinTypes: string[] = [
     '0x2::ctf_a::CTFA',
     '0x2::ctf_b::CTFB',

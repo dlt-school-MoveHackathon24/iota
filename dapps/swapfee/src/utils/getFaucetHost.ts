@@ -1,4 +1,10 @@
-// src/utils/getFaucetHost.ts
+/**
+ * @file getFaucetHost.ts
+ * @summary Returns the faucet host for the given network.
+ * @author
+ *   - Developer: Silvio Meneguzzo
+ * @date September 20, 2024
+ */
 
 export function getFaucetHost(network: string): string {
     switch (network) {

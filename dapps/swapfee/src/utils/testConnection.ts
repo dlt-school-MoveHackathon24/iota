@@ -1,4 +1,10 @@
-// src/utils/testConnection.ts
+/**
+ * @file testConnection.ts
+ * @summary Tests the connection to the IOTA network. If successful, it logs the chain identifier.
+ * @author
+ *   - Developer: Silvio Meneguzzo
+ * @date September 20, 2024
+ */
 
 import { client } from './rpc';
 

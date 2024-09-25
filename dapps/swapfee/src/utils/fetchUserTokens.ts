@@ -1,4 +1,11 @@
-// src/utils/fetchUserTokens.ts
+/**
+ * @file fetchUserTokens.ts
+ * @summary Fetches the user's tokens from the DLT.
+ * @author
+ *   - Developer: Silvio Meneguzzo
+ * @date September 20, 2024
+ */
+
 
 import { client } from './rpc';
 import { whitelistedCoinTypes } from './whitelistedCoinTypes';

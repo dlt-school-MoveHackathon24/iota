@@ -1,4 +1,10 @@
-// src/App.tsx
+/**
+ * @file App.tsx
+ * @description Main React component for the SwapFee DApp, allowing users to pay gas fees with custom tokens on the IOTA network.
+ * @author
+ *   - Developer: Silvio Meneguzzo
+ * @date September 20, 2024
+ */
 
 import React, { useState, useEffect } from 'react';
 import {
@@ -137,7 +143,7 @@ export function App() {
     try {
       const tx = new TransactionBlock();
 
-      const serviceAddress = '0x4dafe69422fccffdd3804d76077f55060002c8e4a4b156b5cd79712b9cf92a4b'; // Replace with your service's address, where the servise will recive the custom token as payment of his service
+      const serviceAddress = '0x8289f651d286ca86f424f89ad4b1a781faaf58372d404c54e51bb511829a493f'; // Replace with your service's address, where the servise will recive the custom token as payment of his service
       const paymentToken = selectedToken;
       if (!paymentToken) {
         alert('No token selected for payment.');

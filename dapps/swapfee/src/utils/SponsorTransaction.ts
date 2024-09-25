@@ -1,4 +1,10 @@
-// src/utils/SponsorTransaction.ts
+/**
+ * @file SponsorTransaction.ts
+  * @summary Sponsor a transaction by funding the sender's account with gas tokens.
+ * @author
+ *   - Developer: Silvio Meneguzzo
+ * @date September 20, 2024
+ */
 
 import { IotaObjectRef } from '@iota/iota-sdk/client';
 import { getFaucetRequestStatus, requestIotaFromFaucetV1 } from '@iota/iota-sdk/faucet';

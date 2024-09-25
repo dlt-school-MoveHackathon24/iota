@@ -1,4 +1,12 @@
-// src/utils/calculateDynamicGasFee.ts
+/**
+ * @file calculateDynamicGasFee.ts
+ * @description Contains logic for calculating the dynamic gas fee when using custom tokens in the SwapFee DApp on IOTA network.
+ *              The calculation is currently static but can be extended for dynamic conversion rates in the future.
+ *              Also handles token whitelist checks to ensure only approved tokens are used for gas payment.
+ * @author
+ *   - Developer: Silvio Meneguzzo
+ * @date September 20, 2024
+ */
 
 import { Token } from './fetchUserTokens';
 
