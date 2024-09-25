@@ -89,6 +89,8 @@ Before deploying IOTA modules, you need to obtain gas. Use the following command
 iota client faucet --url http://127.0.0.1:9123/gas
 ```
 
+Then check the `move/Move.toml` file, and make sure the path to the iota-framework under the dependencies is correct (line 8).
+
 Next, publish the IOTA modules:
 
 ```
