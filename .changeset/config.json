@@ -19,6 +19,7 @@
 		"@iota/apps-ui-kit",
 		"@iota/create-dapp",
 		"sponsored-transactions",
+		"swapfee",
 		"kiosk-demo",
 		"kiosk-cli",
 		"@iota/zklogin",

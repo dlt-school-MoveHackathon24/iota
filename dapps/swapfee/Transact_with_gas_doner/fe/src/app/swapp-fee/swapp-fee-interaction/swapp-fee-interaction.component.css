@@ -1,0 +1,145 @@
+/* Container per il form */
+.form-container {
+  background-color: #f9f9f9;
+  padding: 20px;
+  max-width: 500px;
+  margin: 0 auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Titolo del form */
+.form-title {
+  text-align: center;
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Success Box */
+.success-box {
+  background-color: #e6ffed;
+  border: 1px solid #28a745;
+  color: #155724;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* Gruppo di form */
+.form-group {
+  margin-bottom: 15px;
+}
+
+/* Etichette */
+.form-group label {
+  display: block;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+/* Input e select */
+.form-control {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: border 0.3s ease;
+}
+
+/* Focus sugli input */
+.form-control:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Bottone personalizzato */
+.btn-custom {
+  background-color: #007bff;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 20px;
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.2s;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Effetto hover */
+.btn-custom:hover {
+  background-color: #0056b3;
+  transform: translateY(-3px);
+}
+
+/* Effetto attivo */
+.btn-custom:active {
+  transform: translateY(1px);
+}
+
+/* Spaziatura globale */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f2f5;
+  padding: 20px;
+}
+
+/* Bottone di successo */
+.success-box .btn-success {
+  border-radius: 30px;
+  padding: 8px 16px;
+}
+
+/* Ombra per i bottoni */
+.btn {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  justify-content: center;
+  align-items: center;
+}
+
+/* Stile per il dropdown */
+.form-select {
+  border: 1px solid #ddd; /* Bordo personalizzato */
+  padding: 12px; /* Padding per migliorare la spaziatura interna */
+  background-color: #f9f9f9; /* Colore di sfondo */
+  transition: border-color 0.3s ease; /* Transizione al focus */
+  width: 100%; /* Larghezza al 100% */
+}
+
+/* Focus sul dropdown */
+.form-select:focus {
+  border-color: #007bff; /* Colore del bordo al focus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Ombra al focus */
+}
+
+/* Bottone di submit */
+.btn-primary {
+  background-color: #007bff; /* Colore principale */
+  border: 1px solid #007bff; /* Bordo solido */
+  border-radius: 0; /* Rimuovi gli angoli arrotondati */
+  padding: 12px; /* Padding per il bottone */
+  font-size: 16px; /* Dimensione del testo */
+  transition: background-color 0.3s, border-color 0.3s; /* Effetto di transizione */
+}
+
+/* Effetto hover */
+.btn-primary:hover {
+  background-color: #0056b3; /* Colore al passaggio del mouse */
+  border-color: #0056b3; /* Colore del bordo al passaggio del mouse */
+}
+
+/* Effetto attivo */
+.btn-primary:active {
+  background-color: #004494; /* Colore al clic */
+  border-color: #004494; /* Colore del bordo al clic */
+}
+
+.submitx{
+
+
+  width: 655px;
+  margin: auto;
+}
