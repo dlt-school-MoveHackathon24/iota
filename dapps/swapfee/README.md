@@ -83,12 +83,12 @@ This approach not only benefits users but also fosters innovation and adoption w
 
 6. **Configure Gas Fee Conversion**
 
-   Adjust the gas fee calculation logic in `calculateDynamicGasFee.ts` to define how custom tokens are converted to the equivalent gas fee in IOTA. For this initial version, the conversion can be static.
+   Adjust the gas fee calculation logic in `calculateDynamicGasFee.ts` to define how custom tokens are converted to the equivalent gas fee in IOTA. For this initial version, the conversion will be static.
 
    ```typescript
    // src/utils/calculateDynamicGasFee.ts
    export const calculateDynamicGasFee = (token: Token): bigint => {
-     // Implement conversion logic here
+     // Put your conversion rate
      return BigInt(100); // Example static fee in terms of the custom token
    };
    ```
@@ -225,7 +225,7 @@ We would like to acknowledge the inspiration drawn from similar initiatives in o
 
 ## Additional DApp: Transact with Gas Donor
 
-As a fun and instructive project, we've also developed another small DApp called Transact with Gas Donor, located in the Transact_with_gas_donor/ folder of this repository.
+As a fun and instructive project, we've also developed another small DApp called Transact with Gas Donor, located in the **Transact_with_gas_donor/** folder of this repository.
 
 What It Does
 Transact with Gas Donor is a graphical interface that allows users to send transactions on the IOTA network where a donor account covers the gas fees. This enables the sender to transfer an object without incurring any gas costs directly. The DApp supports any transaction involving an identifiable object (Object ID) and provides a minimal, user-friendly interface.
