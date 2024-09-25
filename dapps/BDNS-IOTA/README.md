@@ -37,6 +37,10 @@ The **IOTA-ID DNS Module** is a solution for decentralized domain name managemen
 
 Our module empowers individuals and organizations to manage their digital identities and decentralized resources with greater security and autonomy. Whether you're building a decentralized application, managing digital identities, or simply looking for a censorship-resistant DNS solution, the IOTA-ID DNS Module provides the tools and infrastructure to do so with confidence.
 
+### :rocket: Future works
+
+One future development would include the Decentralized Identifiers (DIDs) of the relevant entities in addition to IOTA addresses in the tree leaves. DIDs are unique identifiers that can be resolved into DID documents containing public information such as the entity's public keys. For more information, please refer to the [IOTA DID documentation](https://wiki.iota.org/identity.rs/explanations/decentralized-identifiers/).
+
 ---
 
 ## 🛠️ How to Use <a name="how-to-use"/>
@@ -81,13 +85,13 @@ The module is composed of four main functions that enable the creation, manageme
      - The root Node. 
      - The vector of subdomains bringing to a Node.
    - **Outputs**: a Node object.
-   - **Description**: This function retrieves the Node object following a specified Uri and returns it, thid function is mainly internally used.
+   - **Description**: This function retrieves the Node object following a specified Uri and returns it, this function is mainly internally used.
 
 4. **🔍 get_address**:
    - **Inputs**: 
      - The root Node.
      - The vector of subdomains bringing to a Node.
-   - **Description**: This function allows users to obtain the owner address of a subdomain under a given Node. By providing the root Node and the subdomains vector, the function retrieves the subdomain's owner, creates an Address object and sends it to the **sender**.
+   - **Description**: This function allows users to obtain the owner address of a subdomain under a given Node. By providing the root Node and the subdomain vector, the function retrieves the subdomain's owner, creates an Address object and sends it to the **sender**.
 
 ---
 
