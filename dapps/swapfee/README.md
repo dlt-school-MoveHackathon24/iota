@@ -115,11 +115,12 @@ This approach not only benefits users but also fosters innovation and adoption w
 
 ---
 
-## Demo Video
+## Video Demo PoC 
 
 Watch a full demonstration of the SwapFee DApp in action:
 
 [![SwapFee DApp Demo](https://st.depositphotos.com/1907633/4936/i/380/depositphotos_49367797-stock-photo-hand-press-play-button-sign.jpg)](https://www.youtube.com/watch?v=yjeIL4L9lGI)
+
 ---
 ## Usage Guide
 
@@ -162,12 +163,6 @@ Watch a full demonstration of the SwapFee DApp in action:
 8. **Perform Additional Actions or Disconnect**
 
    - You can choose to perform another action or disconnect your wallet.
-
----
-
-## Video Demostration PoC 
-
-PLACEHOLDER
 
 ---
 
