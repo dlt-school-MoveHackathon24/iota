@@ -131,7 +131,6 @@ module bridge::bridge {
 
         let mut scenario = test_scenario::begin(admin);
 
-        //let mut ctx = tx_context::dummy();
         let mut bridge = {
             let ctx = scenario.ctx();
             Bridge { 
@@ -164,8 +163,6 @@ module bridge::bridge {
         assert!(locked_funds_value_before + iota_value == locked_funds_value_after, 0);
 
         transfer::share_object(bridge);
-        //let mut bridge = scenario.take_shared<Bridge>();
-        //test_scenario::return_shared(bridge);
 
         test_scenario::end(scenario);  
     } 
@@ -181,7 +178,6 @@ module bridge::bridge {
 
         let mut scenario = test_scenario::begin(admin);
 
-        //let mut ctx = tx_context::dummy();
         let mut bridge = {
             let ctx = scenario.ctx();
             Bridge { 
@@ -206,79 +202,9 @@ module bridge::bridge {
 
         lockIOTA(&mut bridge, iota, stri);
 
-        //assert!(locked_funds_value_before + iota_value == locked_funds_value_after, 0);
-
         transfer::share_object(bridge);
-        //let mut bridge = scenario.take_shared<Bridge>();
-        //test_scenario::return_shared(bridge);
 
         test_scenario::end(scenario);  
     } 
  
-    /*
-    #[test]
-    public fun fun_mintETH() {
-        //
-        use iota::test_scenario;
-        let admin = @0xCAFE;
-
-        let mut scenario = test_scenario::begin(admin);
-
-        //let mut ctx = tx_context::dummy();
-        let mut bridge = {
-            let ctx = scenario.ctx();
-            Bridge { 
-                id: object::new(ctx), 
-                locked_funds: balance::zero<IOTA>(),
-                weth_to_burn: balance::zero<WETH>(),
-            }
-        };
-
-        /*
-        let (cm_treasury_cap, cm_meta_cap, manager) = {
-            let ctx = scenario.ctx();
-            //let witness = WETH;
-            //transfer::share_object(WETH{});
-            coin_manager::create(
-                bridge::wETH::new(WETH{}),
-                18,          // decimals
-                b"WETH",
-                b"Wrapped Ether",
-                b"Wrapped Ether.",
-                option::none(),
-                ctx
-            )
-        };*/
-        
-
-        {
-            let ctx = scenario.ctx();
-            let admin_cap = AdminCap { id: object::new(ctx) };
-            transfer::transfer(admin_cap, ctx.sender());
-        };
-        
-        let iota = {
-            let ctx = scenario.ctx();
-            coin::mint_for_testing<IOTA>(10_000_000_000, ctx)
-        };
-        
-        let stri = std::string::utf8(b"test");
-
-        let locked_funds_value_before = balance::value<IOTA>(&bridge.locked_funds);
-        let iota_value = coin::value<IOTA>(&iota);
-
-        lockIOTA(&mut bridge, iota, stri);
-
-        let locked_funds_value_after = balance::value<IOTA>(&bridge.locked_funds);
-
-        assert!(locked_funds_value_before + iota_value == locked_funds_value_after, 0);
-
-        transfer::share_object(bridge);
-        //let mut bridge = scenario.take_shared<Bridge>();
-        //test_scenario::return_shared(bridge);
-
-        test_scenario::end(scenario);  
-    } 
-    */
 }
-
