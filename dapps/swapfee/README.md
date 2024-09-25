@@ -234,3 +234,27 @@ Why We Created It
 This project was created as a tutorial and exploratory exercise to understand and demonstrate how gas donation can be implemented in IOTA transactions. It serves as an educational tool and a proof of concept for alternative gas payment mechanisms. Don't use sponsor transaction in reality but it was an instructive project for us, just to practice with IOTA command line and integration.
 
 ---
+
+## Additional Development (PLUS)
+## Future Work: Dynamic Gas Integration Scripts
+
+We've developed Python scripts to enhance **SwapFee** with dynamic and automated functionalities. These scripts are located in the `future_work/` folder of this repository.
+
+### Purpose
+
+The scripts aim to:
+
+- **Fetch Coins**: Retrieve all coins held by a specific IOTA address.
+- **Blacklist Filtering**: Exclude any coins on a predefined blacklist.
+- **Update Whitelisted Coins**: Automatically update `whiteListedCoinTypes.ts` with valid coins.
+- **Manage Exchange Rates**: Ensure all coins have exchange rates, prompting for any missing values.
+
+This foundation prepares **SwapFee** for:
+
+- **Dynamic Gas Fee Calculations**: Implementing real-time exchange rates.
+- **Automated Token Support**: Simplifying the addition of new tokens.
+- **Enhanced Security**: Maintaining integrity by filtering out blacklisted coins.
+
+To run or try these scripts, please navigate to the `future_work/` folder and read the included README.
+
+---
