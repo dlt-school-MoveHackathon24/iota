@@ -220,3 +220,17 @@ We would like to acknowledge the inspiration drawn from similar initiatives in o
 ---
 
 **Note**: Ensure that you replace placeholder texts like `YOUR_SERVICE_ADDRESS` and `your_custom_token` with actual values relevant to your setup.
+
+---
+
+## Additional DApp: Transact with Gas Donor
+
+As a fun and instructive project, we've also developed another small DApp called Transact with Gas Donor, located in the Transact_with_gas_donor/ folder of this repository.
+
+What It Does
+Transact with Gas Donor is a graphical interface that allows users to send transactions on the IOTA network where a donor account covers the gas fees. This enables the sender to transfer an object without incurring any gas costs directly. The DApp supports any transaction involving an identifiable object (Object ID) and provides a minimal, user-friendly interface.
+
+Why We Created It
+This project was created as a tutorial and exploratory exercise to understand and demonstrate how gas donation can be implemented in IOTA transactions. It serves as an educational tool and a proof of concept for alternative gas payment mechanisms. Don't use sponsor transaction in reality but it was an instructive project for us, just to practice with IOTA command line and integration.
+
+---
